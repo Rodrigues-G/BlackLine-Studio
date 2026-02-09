@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contactos | Tatu Shop</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gradient-to-br from-neutral-900 via-neutral-800 to-black flex flex-col min-h-screen text-gray-200">
+
+  <!-- Navbar -->
+ <nav class="bg-black text-white shadow-lg border-b border-neutral-800">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <h1 class="text-2xl font-extrabold tracking-wide">BlackLine Studio</h1>
+    <ul class="flex space-x-6 text-lg">
+      <li><a href="index.html" class="hover:text-red-500 transition">Início</a></li>
+      <li><a href="gallery.html" class="hover:text-red-500 transition">Galeria</a></li>
+      <li><a href="artists.html" class="hover:text-red-500 transition">Artistas</a></li>
+      <li><a href="booking.html" class="hover:text-red-500 transition">Agendamentos</a></li>
+      <li><a href="contact.html" class="hover:text-red-500 transition">Contactos</a></li>
+      <li><a href="login.html" class="hover:text-red-500 transition">Login</a></li>
+    </ul>
+  </div>
+</nav>
+
+  <!-- Conteúdo principal -->
+  <main class="flex-grow container mx-auto px-6 py-16">
+
+    <h2 class="text-4xl font-extrabold text-center mb-4 text-white">
+      Contacta o Estúdio
+    </h2>
+    <p class="text-center text-gray-400 mb-16 max-w-2xl mx-auto">
+      Tens alguma ideia, dúvida ou queres marcar uma sessão?
+      Fala connosco ou visita o nosso estúdio.
+    </p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-6xl mx-auto">
+
+      <!-- Informações da Loja -->
+      <div class="bg-neutral-900 border border-neutral-800 p-8 rounded-2xl shadow-xl">
+        <h3 class="text-2xl font-bold text-red-500 mb-6">📍 Estúdio</h3>
+
+        <div class="space-y-4 text-gray-300">
+          <p><strong>Morada:</strong><br>
+            Rua Ink Street, nº 13<br>
+            1000-000 Lisboa
+          </p>
+
+          <p><strong>Telefone:</strong><br>
+            +351 911 222 333
+          </p>
+
+          <p><strong>Email:</strong><br>
+            contacto@tatushop.pt
+          </p>
+
+          <p><strong>Horário:</strong><br>
+            Segunda a Sexta: 11h – 20h<br>
+            Sábado: 12h – 18h<br>
+            Domingo: Encerrado
+          </p>
+        </div>
+
+        <div class="mt-8">
+          <h4 class="font-semibold text-red-500 mb-2">Redes Sociais</h4>
+          <div class="flex space-x-6">
+            <a href="#" class="hover:text-red-400 transition">Instagram</a>
+            <a href="#" class="hover:text-red-400 transition">Facebook</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formulário -->
+      <form id="contactForm" class="bg-neutral-900 border border-neutral-800 p-8 rounded-2xl shadow-xl">
+        <h3 class="text-2xl font-bold text-red-500 mb-6">✍️ Envia a tua ideia</h3>
+
+        <div class="mb-4">
+          <label class="block text-gray-300 font-semibold mb-1">Nome</label>
+          <input type="text" id="name" required
+                 class="w-full bg-neutral-800 border border-neutral-700 rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500">
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-gray-300 font-semibold mb-1">Email</label>
+          <input type="email" id="email" required
+                 class="w-full bg-neutral-800 border border-neutral-700 rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500">
+        </div>
+
+        <div class="mb-6">
+          <label class="block text-gray-300 font-semibold mb-1">Mensagem</label>
+          <textarea id="message" rows="4" required
+                    class="w-full bg-neutral-800 border border-neutral-700 rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500"></textarea>
+        </div>
+
+        <button type="submit"
+                class="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-bold tracking-wide transition">
+          Enviar Mensagem
+        </button>
+
+        <p id="successMessage" class="text-green-400 mt-4 text-center hidden">
+          ✅ Mensagem enviada com sucesso!
+        </p>
+      </form>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-black border-t border-neutral-800 text-gray-400 text-center py-4">
+    <p>© <span id="ano"></span> Tatu Shop — Todos os direitos reservados</p>
+  </footer>
+
+  <!-- Firebase -->
+  <script type="module" src="firebase.js"></script>
+
+  <!-- Script -->
+  <script>
+    document.getElementById("ano").textContent = new Date().getFullYear();
+
+    document.getElementById("contactForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const message = document.getElementById("message").value.trim();
+
+      if (typeof saveMessage === "function") {
+        saveMessage(name, email, message);
+      }
+
+      document.getElementById("successMessage").classList.remove("hidden");
+      this.reset();
+    });
+  </script>
+
+</body>
+</html>

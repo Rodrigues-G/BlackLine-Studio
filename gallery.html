@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Galeria | BlackLine Studio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gradient-to-br from-neutral-900 via-neutral-800 to-black text-gray-200 min-h-screen flex flex-col">
+
+<nav class="bg-black border-b border-neutral-800 text-white">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <h1 class="text-2xl font-extrabold">BlackLine Studio</h1>
+    <ul class="flex space-x-6">
+      <li><a href="index.html" class="hover:text-red-500">Início</a></li>
+      <li><a href="gallery.html" class="text-red-500 font-semibold">Galeria</a></li>
+      <li><a href="artists.html" class="hover:text-red-500">Artistas</a></li>
+      <li><a href="booking.html" class="hover:text-red-500">Agendamentos</a></li>
+      <li><a href="contact.html" class="hover:text-red-500">Contactos</a></li>
+      <li><a href="login.html" class="hover:text-red-500">Login</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="flex-grow max-w-7xl mx-auto px-6 py-16">
+  <h2 class="text-4xl font-extrabold text-center mb-12">Galeria</h2>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+    <img src="assets/imagens/tattoo1.jpg" class="rounded-xl hover:scale-105 transition shadow-lg">
+    <img src="assets/imagens/tattoo2.jpg" class="rounded-xl hover:scale-105 transition shadow-lg">
+    <img src="assets/imagens/tattoo3.jpg" class="rounded-xl hover:scale-105 transition shadow-lg">
+  </div>
+</main>
+
+<footer class="bg-black border-t border-neutral-800 text-gray-400 text-center py-4">
+  <p>© <span id="ano"></span> BlackLine Studio</p>
+</footer>
+
+<script>
+  document.getElementById("ano").textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
