@@ -18,6 +18,21 @@ onAuthStateChanged(auth, (user) => {
     messageDiv.innerHTML = '';  // limpa mensagem
   }
 });
+// Dentro do onAuthStateChanged ou no DOMContentLoaded
+if (!user) {
+  document.getElementById('booking-notification').classList.remove('hidden');
+
+  // Fecha ao clicar no X
+  document.getElementById('close-notification')?.addEventListener('click', () => {
+    document.getElementById('booking-notification').classList.add('hidden');
+  });
+
+  // Esconde o form de agendamento (opcional)
+  document.getElementById('booking-form')?.classList.add('hidden');
+} else {
+  document.getElementById('booking-notification').classList.add('hidden');
+  document.getElementById('booking-form')?.classList.remove('hidden');
+}
 
 // Handler do submit (só roda se logado)
 document.addEventListener('DOMContentLoaded', () => {

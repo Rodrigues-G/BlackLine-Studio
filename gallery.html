@@ -8,29 +8,40 @@
 
 <body class="bg-gradient-to-br from-neutral-900 via-neutral-800 to-black text-gray-200 min-h-screen flex flex-col">
 
-<nav class="bg-black border-b border-neutral-800 text-white">
+<nav class="bg-black border-b border-neutral-800 text-white fixed w-full top-0 z-50">
   <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-    <ul class="flex space-x-6 text-lg items-center">
-  <li><a href="index.html" class="text-red-500 font-semibold">Início</a></li>
-  <li><a href="gallery.html" class="hover:text-red-500">Galeria</a></li>
-  <li><a href="artists.html" class="hover:text-red-500">Artistas</a></li>
-  <li><a href="booking.html" class="hover:text-red-500">Agendamentos</a></li>
-  <li><a href="contact.html" class="hover:text-red-500">Contactos</a></li>
+    <!-- Logo + Nome no canto superior esquerdo -->
+    <a href="index.html" class="flex items-center space-x-3">
+      <img src="assets/imagens/logo.png" alt="Logo BlackLine Studio" class="h-10 w-10 object-contain"> <!-- Ajusta o caminho e tamanho da tua logo -->
+      <h1 class="text-2xl md:text-3xl font-extrabold tracking-wide text-white">BlackLine Studio</h1>
+    </a>
 
-  <!-- Links que mudam conforme login -->
-  <li id="guest-links">
-    <a href="client-login.html" class="hover:text-red-500">Área Cliente</a>
-  </li>
+    <!-- Links do menu -->
+    <ul class="flex space-x-6 md:space-x-8 text-base md:text-lg items-center">
+      <li><a href="index.html" class="hover:text-red-500 transition">Início</a></li>
+      <li><a href="gallery.html" class="hover:text-red-500 transition">Galeria</a></li>
+      <li><a href="artists.html" class="hover:text-red-500 transition">Artistas</a></li>
+      <li><a href="booking.html" class="hover:text-red-500 transition">Agendamentos</a></li>
+      <li><a href="contact.html" class="hover:text-red-500 transition">Contactos</a></li>
 
-  <li id="user-links" class="hidden flex items-center space-x-4">
-    <a href="perfil.html" class="hover:text-red-500">Perfil</a>
-    <button id="logout-btn" class="bg-red-700 hover:bg-red-800 px-4 py-1 rounded text-sm font-medium transition">
-      Sair
-    </button>
-  </li>
-</ul>
+      <!-- Links dinâmicos (login cliente vs perfil/logout) -->
+      <li id="guest-links">
+        <a href="client-login.html" class="hover:text-red-500 transition">Área Cliente</a>
+      </li>
+      <li id="user-links" class="hidden flex items-center space-x-6">
+        <a href="perfil.html" class="hover:text-red-500 transition">Perfil</a>
+        <button id="logout-btn" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm font-medium transition">
+          Sair
+        </button>
+      </li>
+
+      <li><a href="login.html" class="hover:text-red-500 transition">Admin</a></li>
+    </ul>
   </div>
 </nav>
+
+<!-- Espaço para evitar que o conteúdo fique por baixo do navbar fixo -->
+<div class="h-20"></div> <!-- Ajusta a altura conforme o teu navbar -->
 
 <main class="flex-grow max-w-7xl mx-auto px-6 py-16">
   <h2 class="text-4xl font-extrabold text-center mb-12">Galeria</h2>
@@ -119,3 +130,31 @@
   }
 </style>
 </html>
+<script type="module">
+  import { auth, onAuthStateChanged, signOut } from './assets/js/firebase.js';  // ajusta o caminho se necessário
+
+  onAuthStateChanged(auth, (user) => {
+    const guestLinks = document.getElementById('guest-links');
+    const userLinks = document.getElementById('user-links');
+    const logoutBtn = document.getElementById('logout-btn');
+
+    if (user) {
+      // Logado: mostra Perfil + Sair
+      if (guestLinks) guestLinks.classList.add('hidden');
+      if (userLinks) userLinks.classList.remove('hidden');
+
+      // Logout
+      if (logoutBtn) {
+        logoutBtn.onclick = () => {
+          signOut(auth).then(() => {
+            window.location.href = 'index.html';
+          });
+        };
+      }
+    } else {
+      // Não logado: mostra Área Cliente
+      if (guestLinks) guestLinks.classList.remove('hidden');
+      if (userLinks) userLinks.classList.add('hidden');
+    }
+  });
+</script>

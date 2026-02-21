@@ -148,3 +148,31 @@ setTimeout(() => window.location.href = 'index.html', 1500);
 
 </body>
 </html>
+<script type="module">
+  import { auth, onAuthStateChanged, signOut } from './assets/js/firebase.js';  // ajusta o caminho se necessário
+
+  onAuthStateChanged(auth, (user) => {
+    const guestLinks = document.getElementById('guest-links');
+    const userLinks = document.getElementById('user-links');
+    const logoutBtn = document.getElementById('logout-btn');
+
+    if (user) {
+      // Logado: mostra Perfil + Sair
+      if (guestLinks) guestLinks.classList.add('hidden');
+      if (userLinks) userLinks.classList.remove('hidden');
+
+      // Logout
+      if (logoutBtn) {
+        logoutBtn.onclick = () => {
+          signOut(auth).then(() => {
+            window.location.href = 'index.html';
+          });
+        };
+      }
+    } else {
+      // Não logado: mostra Área Cliente
+      if (guestLinks) guestLinks.classList.remove('hidden');
+      if (userLinks) userLinks.classList.add('hidden');
+    }
+  });
+</script>
