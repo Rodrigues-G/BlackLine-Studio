@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Cliente | BlackLine Studio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-neutral-900 via-neutral-800 to-black text-gray-200 min-h-screen flex items-center justify-center">
+
+  <div class="w-full max-w-md px-6">
+    <div class="bg-neutral-900 border border-neutral-800 rounded-2xl shadow-2xl p-10">
+      <div class="text-center mb-10">
+        <h1 class="text-3xl font-extrabold tracking-wide text-white">BlackLine Studio</h1>
+        <p class="text-gray-400 mt-2 text-lg">Área do Cliente</p>
+      </div>
+
+      <!-- Tabs: Login / Registo -->
+      <div class="flex justify-center mb-8">
+        <button id="tab-login" class="px-6 py-2 font-medium border-b-2 border-red-600 text-red-500">Login</button>
+        <button id="tab-register" class="px-6 py-2 font-medium text-gray-400 hover:text-gray-200">Criar Conta</button>
+      </div>
+
+      <!-- Form Login -->
+      <form id="client-login-form" class="space-y-6">
+        <div>
+          <label for="login-email" class="block text-sm font-medium text-gray-300 mb-2">Email</label>
+          <input id="login-email" type="email" required class="w-full px-4 py-3 bg-neutral-950 border border-neutral-700 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/30 transition" placeholder="teu@email.com" />
+        </div>
+        <div>
+          <label for="login-password" class="block text-sm font-medium text-gray-300 mb-2">Password</label>
+          <input id="login-password" type="password" required class="w-full px-4 py-3 bg-neutral-950 border border-neutral-700 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/30 transition" placeholder="••••••••" />
+        </div>
+        <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-bold tracking-wide transition duration-300">Entrar</button>
+      </form>
+
+      <!-- Form Registo -->
+      <form id="client-register-form" class="space-y-6 hidden">
+        <div>
+          <label for="reg-name" class="block text-sm font-medium text-gray-300 mb-2">Nome Completo</label>
+          <input id="reg-name" type="text" required class="w-full px-4 py-3 bg-neutral-950 border border-neutral-700 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/30 transition" placeholder="O teu nome" />
+        </div>
+        <div>
+          <label for="reg-email" class="block text-sm font-medium text-gray-300 mb-2">Email</label>
+          <input id="reg-email" type="email" required class="w-full px-4 py-3 bg-neutral-950 border border-neutral-700 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/30 transition" placeholder="teu@email.com" />
+        </div>
+        <div>
+          <label for="reg-password" class="block text-sm font-medium text-gray-300 mb-2">Password</label>
+          <input id="reg-password" type="password" required minlength="6" class="w-full px-4 py-3 bg-neutral-950 border border-neutral-700 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/30 transition" placeholder="Mínimo 6 caracteres" />
+        </div>
+        <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-bold tracking-wide transition duration-300">Criar Conta</button>
+      </form>
+
+      <div id="client-message" class="mt-4 text-center text-sm font-medium hidden"></div>
+
+      <div class="mt-8 text-center text-sm">
+        <a href="index.html" class="text-gray-400 hover:text-red-500 transition">Voltar ao site</a>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { auth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from './assets/js/firebase.js';  // ajusta o caminho
+
+    const loginForm = document.getElementById('client-login-form');
+    const registerForm = document.getElementById('client-register-form');
+    const msg = document.getElementById('client-message');
+    const tabLogin = document.getElementById('tab-login');
+    const tabRegister = document.getElementById('tab-register');
+
+    // Tabs
+    tabLogin.addEventListener('click', () => {
+      loginForm.classList.remove('hidden');
+      registerForm.classList.add('hidden');
+      tabLogin.classList.add('border-b-2', 'border-red-600', 'text-red-500');
+      tabRegister.classList.remove('border-b-2', 'border-red-600', 'text-red-500');
+      tabRegister.classList.add('text-gray-400');
+    });
+
+    tabRegister.addEventListener('click', () => {
+      registerForm.classList.remove('hidden');
+      loginForm.classList.add('hidden');
+      tabRegister.classList.add('border-b-2', 'border-red-600', 'text-red-500');
+      tabLogin.classList.remove('border-b-2', 'border-red-600', 'text-red-500');
+      tabLogin.classList.add('text-gray-400');
+    });
+
+    // Login Cliente → redireciona para index.html
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      showMessage('A autenticar...', 'text-gray-400');
+
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        showMessage('Bem-vindo! Redirecionando para a página principal...', 'text-green-500');
+        setTimeout(() => window.location.href = 'index.html', 1500);
+      } catch (err) {
+        showMessage('Email ou password incorretos.', 'text-red-500');
+      }
+    });
+
+    // Registo → redireciona para index.html
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      showMessage('A criar conta...', 'text-gray-400');
+
+      const name = document.getElementById('reg-name').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
+      const password = document.getElementById('reg-password').value;
+
+      try {
+        await createUserWithEmailAndPassword(auth, email, password);
+        // Após criar conta
+        const user = userCredential.user;
+
+        await setDoc(doc(db, 'users', user.uid), {
+        displayName: name,                // nome do form
+        email: email,
+        createdAt: serverTimestamp(),
+        profileCompleted: false,          // flag para notificação
+        phoneNumber: '',                  // vazio inicialmente
+        birthDate: '',                    // ex: '1990-01-01'
+        photoURL: ''                      // vazio
+});
+
+showMessage('Conta criada! Redirecionando...', 'text-green-500');
+setTimeout(() => window.location.href = 'index.html', 1500);
+        // Opcional: guardar nome em Firestore (adiciona se quiseres)
+        showMessage('Conta criada com sucesso! Redirecionando para a página principal...', 'text-green-500');
+        setTimeout(() => window.location.href = 'index.html', 1500);
+      } catch (err) {
+        let errorMsg = 'Erro ao criar conta.';
+        if (err.code === 'auth/email-already-in-use') errorMsg = 'Email já registado.';
+        if (err.code === 'auth/weak-password') errorMsg = 'Password fraca (mínimo 6 caracteres).';
+        showMessage(errorMsg, 'text-red-500');
+      }
+    });
+
+    function showMessage(text, colorClass) {
+      msg.classList.remove('hidden', 'text-green-500', 'text-red-500', 'text-gray-400');
+      msg.classList.add(colorClass);
+      msg.textContent = text;
+    }
+  </script>
+
+</body>
+</html>

@@ -13,14 +13,25 @@
 <nav class="bg-black border-b border-neutral-800 text-white">
   <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
     <h1 class="text-2xl font-extrabold tracking-wide">BlackLine Studio</h1>
-    <ul class="flex space-x-6 text-lg">
-      <li><a href="index.html" class="text-red-500 font-semibold">Início</a></li>
-      <li><a href="gallery.html" class="hover:text-red-500">Galeria</a></li>
-      <li><a href="artists.html" class="hover:text-red-500">Artistas</a></li>
-      <li><a href="booking.html" class="hover:text-red-500">Agendamentos</a></li>
-      <li><a href="contact.html" class="hover:text-red-500">Contactos</a></li>
-      <li><a href="login.html" class="hover:text-red-500">Login</a></li>
-    </ul>
+    <ul class="flex space-x-6 text-lg items-center">
+  <li><a href="index.html" class="text-red-500 font-semibold">Início</a></li>
+  <li><a href="gallery.html" class="hover:text-red-500">Galeria</a></li>
+  <li><a href="artists.html" class="hover:text-red-500">Artistas</a></li>
+  <li><a href="booking.html" class="hover:text-red-500">Agendamentos</a></li>
+  <li><a href="contact.html" class="hover:text-red-500">Contactos</a></li>
+
+  <!-- Links que mudam conforme login -->
+  <li id="guest-links">
+    <a href="client-login.html" class="hover:text-red-500">Área Cliente</a>
+  </li>
+
+  <li id="user-links" class="hidden flex items-center space-x-4">
+    <a href="perfil.html" class="hover:text-red-500">Perfil</a>
+    <button id="logout-btn" class="bg-red-700 hover:bg-red-800 px-4 py-1 rounded text-sm font-medium transition">
+      Sair
+    </button>
+  </li>
+</ul>
   </div>
 </nav>
 
@@ -90,4 +101,71 @@
 </script>
 
 </body>
+<script type="module">
+  import { auth, onAuthStateChanged, signOut } from './assets/js/firebase.js';
+
+  onAuthStateChanged(auth, async (user) => {
+    const guestLinks = document.getElementById('guest-links');
+    const userLinks = document.getElementById('user-links');
+    const logoutBtn = document.getElementById('logout-btn');
+
+    if (user) {
+      // Utilizador logado → mostra Perfil + Logout
+      guestLinks?.classList.add('hidden');
+      userLinks?.classList.remove('hidden');
+
+      // Logout funcional
+      if (logoutBtn) {
+        logoutBtn.onclick = async () => {
+          await signOut(auth);
+          window.location.href = 'index.html';
+        };
+      }
+
+      // Verifica se é "primeiro login" ou perfil incompleto
+      // (aqui usamos displayName como indicador simples – se vazio, assume incompleto)
+      if (!user.displayName) {
+        showFirstLoginNotification();
+      }
+    } else {
+      // Não logado → mostra Área Cliente
+      guestLinks?.classList.remove('hidden');
+      userLinks?.classList.add('hidden');
+    }
+  });
+
+  // Função para mostrar notificação de topo
+  function showFirstLoginNotification() {
+    const notification = document.createElement('div');
+    notification.innerHTML = `
+      <div class="fixed top-4 left-1/2 transform -translate-x-1/2 bg-neutral-800 border border-red-600 text-gray-200 px-6 py-4 rounded-lg shadow-2xl z-50 flex items-center space-x-4 animate-fade-in">
+        <span>Atualize o seu perfil para uma melhor experiência!</span>
+        <a href="perfil.html" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm font-medium transition">
+          Ir ao Perfil
+        </a>
+        <button id="close-notification" class="text-gray-400 hover:text-white">✕</button>
+      </div>
+    `;
+
+    document.body.appendChild(notification);
+
+    // Fechar ao clicar no X
+    document.getElementById('close-notification')?.addEventListener('click', () => {
+      notification.remove();
+    });
+
+    // Desaparece sozinho após 12 segundos
+    setTimeout(() => notification.remove(), 12000);
+  }
+</script>
+
+<style>
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+</style>
 </html>

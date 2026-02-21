@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perfil | BlackLine Studio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-neutral-900 via-neutral-800 to-black text-gray-200 min-h-screen">
+
+  <!-- Teu navbar aqui -->
+
+  <div class="max-w-2xl mx-auto px-6 py-16">
+    <h1 class="text-4xl font-extrabold text-center mb-10">O Seu Perfil</h1>
+
+    <div class="bg-neutral-900 border border-neutral-700 rounded-2xl p-10 shadow-2xl">
+      <div class="flex justify-center mb-8">
+        <div class="relative">
+          <img id="profile-photo" src="https://via.placeholder.com/150?text=Foto" alt="Foto de Perfil" class="w-32 h-32 rounded-full object-cover border-4 border-red-600">
+          <label for="photo-upload" class="absolute bottom-0 right-0 bg-red-600 text-white text-xs px-2 py-1 rounded-full cursor-pointer hover:bg-red-700">
+            Alterar
+          </label>
+          <input type="file" id="photo-upload" accept="image/*" class="hidden">
+        </div>
+      </div>
+
+      <form id="profile-form" class="space-y-6">
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">Nome Completo</label>
+          <input id="display-name" type="text" required class="w-full px-4 py-3 bg-neutral-950 border border-neutral-700 rounded-lg text-gray-200 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/30 transition" placeholder="O seu nome" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">Email</label>
+          <input id="email" type="email" required class="w-full px-4 py-3 bg-neutral-950 border border-neutral-700 rounded-lg text-gray-200 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/30 transition" placeholder="teu@email.com" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">Password Atual (para alterar email)</label>
+          <input id="current-password" type="password" required class="w-full px-4 py-3 bg-neutral-950 border border-neutral-700 rounded-lg text-gray-200 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/30 transition" placeholder="••••••••" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">Número de Telefone</label>
+          <input id="phone" type="tel" class="w-full px-4 py-3 bg-neutral-950 border border-neutral-700 rounded-lg text-gray-200 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/30 transition" placeholder="+351 912 345 678" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">Data de Nascimento</label>
+          <input id="birthdate" type="date" class="w-full px-4 py-3 bg-neutral-950 border border-neutral-700 rounded-lg text-gray-200 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/30 transition" />
+        </div>
+
+        <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-bold tracking-wide transition duration-300">
+          Guardar Alterações
+        </button>
+      </form>
+
+      <div id="profile-message" class="mt-4 text-center text-sm font-medium hidden"></div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { auth, db, storage, onAuthStateChanged, updateProfile, updateEmail, reauthenticateWithCredential, EmailAuthProvider, ref, uploadBytes, getDownloadURL, doc, getDoc, setDoc } from './assets/js/firebase.js';
+
+    const form = document.getElementById('profile-form');
+    const msg = document.getElementById('profile-message');
+    const photoInput = document.getElementById('photo-upload');
+    const photoImg = document.getElementById('profile-photo');
+
+    let currentUser;
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = 'client-login.html';
+        return;
+      }
+      currentUser = user;
+
+      // Carrega dados atuais
+      document.getElementById('display-name').value = user.displayName || '';
+      document.getElementById('email').value = user.email || '';
+
+      // Carrega foto e campos custom do Firestore
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      if (userDoc.exists()) {
+        const data = userDoc.data();
+        photoImg.src = data.photoURL || 'https://via.placeholder.com/150?text=Foto';
+        document.getElementById('phone').value = data.phoneNumber || '';
+        document.getElementById('birthdate').value = data.birthDate || '';
+      }
+    });
+
+    // Upload foto
+    photoInput.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const storageRef = ref(storage, `profile-photos/${currentUser.uid}`);
+      await uploadBytes(storageRef, file);
+      const photoURL = await getDownloadURL(storageRef);
+
+      await updateProfile(currentUser, { photoURL });
+      photoImg.src = photoURL;
+
+      await setDoc(doc(db, 'users', currentUser.uid), { photoURL }, { merge: true });
+      showMessage('Foto atualizada!', 'text-green-500');
+    });
+
+    // Submit form
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      showMessage('A guardar...', 'text-gray-400');
+
+      const name = document.getElementById('display-name').value.trim();
+      const newEmail = document.getElementById('email').value.trim();
+      const currentPassword = document.getElementById('current-password').value;
+      const phone = document.getElementById('phone').value.trim();
+      const birthdate = document.getElementById('birthdate').value;
+
+      if (!name) return showMessage('Nome obrigatório.', 'text-red-500');
+
+      try {
+        // Atualiza nome e foto (se mudou)
+        await updateProfile(currentUser, { displayName: name });
+
+        // Atualiza email (requer reautenticação)
+        if (newEmail !== currentUser.email) {
+          if (!currentPassword) throw new Error('Password atual necessária para alterar email.');
+          const credential = EmailAuthProvider.credential(currentUser.email, currentPassword);
+          await reauthenticateWithCredential(currentUser, credential);
+          await updateEmail(currentUser, newEmail);
+        }
+
+        // Guarda campos custom no Firestore
+        await setDoc(doc(db, 'users', currentUser.uid), {
+          displayName: name,
+          email: newEmail,
+          phoneNumber: phone,
+          birthDate: birthdate,
+          profileCompleted: true  // Marca como completo → para sempre
+        }, { merge: true });
+
+        showMessage('Perfil atualizado com sucesso!', 'text-green-500');
+      } catch (err) {
+        let errorMsg = err.message;
+        if (err.code === 'auth/wrong-password') errorMsg = 'Password atual incorreta.';
+        if (err.code === 'auth/requires-recent-login') errorMsg = 'Reautentique-se para alterar email.';
+        showMessage(errorMsg, 'text-red-500');
+      }
+    });
+
+    function showMessage(text, colorClass) {
+      msg.classList.remove('hidden', 'text-green-500', 'text-red-500', 'text-gray-400');
+      msg.classList.add(colorClass);
+      msg.textContent = text;
+    }
+  </script>
+
+</body>
+</html>

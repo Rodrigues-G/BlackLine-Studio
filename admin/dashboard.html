@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard Admin - BlackLine</title>
+  <!-- teu CSS/Tailwind -->
+</head>
+<body>
+  <h1>Dashboard</h1>
+  <button id="logout">Sair</button>
+
+  <h2>Marcações Pendentes</h2>
+  <div id="bookings-list"></div>
+
+  <h2>Contactos</h2>
+  <div id="contacts-list"></div>
+
+  <script type="module">
+    import { auth, db, getDocs, collection, query, orderBy, deleteDoc, doc, signOut } from '../assets/js/firebase.js';
+
+    // Logout
+    document.getElementById('logout').addEventListener('click', () => signOut(auth));
+
+    // Carrega bookings
+    async function loadBookings() {
+      const q = query(collection(db, 'bookings'), orderBy('createdAt', 'desc'));
+      const snapshot = await getDocs(q);
+      const list = document.getElementById('bookings-list');
+      list.innerHTML = '';
+      snapshot.forEach((d) => {
+        const data = d.data();
+        const div = document.createElement('div');
+        div.innerHTML = `
+          <p><strong>${data.nome}</strong> - ${data.email} | ${data.data} ${data.hora}</p>
+          <p>${data.mensagem}</p>
+          <button onclick="deleteBooking('${d.id}')">Apagar</button>
+          <hr>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    window.deleteBooking = async (id) => {
+      if (confirm('Apagar mesmo?')) {
+        await deleteDoc(doc(db, 'bookings', id));
+        loadBookings();
+      }
+    };
+
+    // Carrega contactos (similar)
+    // ... adiciona função loadContacts() igual mas para 'contacts'
+
+    loadBookings();
+    // loadContacts();
+  </script>
+</body>
+</html>
