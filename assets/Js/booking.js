@@ -1,66 +1,81 @@
 // assets/js/booking.js
-import { auth, db, addDoc, collection, serverTimestamp, onAuthStateChanged } from './firebase.js';
+// Lógica de agendamento: exige login do cliente, validação e envio para Firestore
 
+import {
+  auth,
+  db,
+  addDoc,
+  collection,
+  serverTimestamp,
+  onAuthStateChanged
+} from './firebase.js';
+
+// ────────────────────────────────────────────────
+// Variável global para o utilizador atual
 let currentUser = null;
 
-// Verifica login ao carregar a página
+// ────────────────────────────────────────────────
+// Verifica autenticação e controla visibilidade do form + notificação
 onAuthStateChanged(auth, (user) => {
   currentUser = user;
+
   const form = document.getElementById('booking-form');
-  const messageDiv = document.getElementById('booking-message');  // adiciona este div no HTML para mensagens
+  const notification = document.getElementById('booking-notification');
 
   if (!user) {
-    // Não logado: Bloqueia form e mostra mensagem
-    form.classList.add('hidden');  // esconde form
-    messageDiv.innerHTML = `<p class="text-red-500 text-center">Para agendar, faz <a href="client-login.html" class="underline hover:text-red-700">login ou cria uma conta</a>.</p>`;
+    // Não logado: esconde form e mostra notificação flutuante
+    if (form) form.classList.add('hidden');
+    if (notification) notification.classList.remove('hidden');
   } else {
-    form.classList.remove('hidden');
-    messageDiv.innerHTML = '';  // limpa mensagem
+    // Logado: mostra form e esconde notificação
+    if (form) form.classList.remove('hidden');
+    if (notification) notification.classList.add('hidden');
   }
 });
-// Dentro do onAuthStateChanged ou no DOMContentLoaded
-if (!user) {
-  document.getElementById('booking-notification').classList.remove('hidden');
 
-  // Fecha ao clicar no X
-  document.getElementById('close-notification')?.addEventListener('click', () => {
-    document.getElementById('booking-notification').classList.add('hidden');
-  });
-
-  // Esconde o form de agendamento (opcional)
-  document.getElementById('booking-form')?.classList.add('hidden');
-} else {
-  document.getElementById('booking-notification').classList.add('hidden');
-  document.getElementById('booking-form')?.classList.remove('hidden');
-}
-
-// Handler do submit (só roda se logado)
+// ────────────────────────────────────────────────
+// Handler do formulário de agendamento
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('booking-form');
+  const notification = document.getElementById('booking-notification');
+  const closeBtn = document.getElementById('close-notification');
+
+  if (!form) {
+    console.warn('Formulário de booking não encontrado (id="booking-form")');
+    return;
+  }
+
+  // Fechar notificação ao clicar no X (se existir)
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => {
+      if (notification) notification.classList.add('hidden');
+    });
+  }
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     if (!currentUser) {
-      alert('Precisas de estar logado para agendar!');
+      alert('É necessário estar logado para agendar uma sessão.');
       window.location.href = 'client-login.html';
       return;
     }
 
-    // Pega valores (ajusta IDs conforme o teu form)
-    const nome = document.getElementById('nome').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const mensagem = document.getElementById('mensagem').value.trim();
-    const data = document.getElementById('data').value;
-    const hora = document.getElementById('hora').value;
+    // Captura dos campos (ajusta os IDs conforme o teu HTML real)
+    const nome      = document.getElementById('nome')?.value.trim()     || '';
+    const email     = document.getElementById('email')?.value.trim()    || '';
+    const mensagem  = document.getElementById('mensagem')?.value.trim() || '';
+    const data      = document.getElementById('data')?.value           || '';
+    const hora      = document.getElementById('hora')?.value           || '';
 
-    // Validação
+    // Validação básica
     if (!nome || !email || !mensagem || !data || !hora) {
-      alert('Preenche todos os campos!');
+      alert('Por favor, preencha todos os campos obrigatórios.');
       return;
     }
-    if (!email.includes('@')) {
-      alert('Email inválido!');
+
+    if (!email.includes('@') || !email.includes('.')) {
+      alert('O email parece inválido. Verifique por favor.');
       return;
     }
 
@@ -71,13 +86,18 @@ document.addEventListener('DOMContentLoaded', () => {
         mensagem,
         data,
         hora,
-        userId: currentUser.uid,  // associa ao cliente logado
-        createdAt: serverTimestamp()
+        userId: currentUser.uid,          // associa ao cliente logado
+        createdAt: serverTimestamp(),
+        status: 'pendente'                // opcional – ajuda no dashboard admin
       });
-      alert('Marcação enviada com sucesso!');
-      form.reset();
+
+      alert('Marcação enviada com sucesso! Entraremos em contacto em breve.');
+      form.reset(); // limpa o form
     } catch (error) {
-      alert('Erro ao enviar: ' + error.message);
+      console.error('Erro ao enviar marcação:', error);
+      alert('Ocorreu um erro ao enviar a marcação. Tente novamente ou contacte-nos diretamente.');
     }
   });
 });
+
+console.log('booking.js carregado com sucesso');

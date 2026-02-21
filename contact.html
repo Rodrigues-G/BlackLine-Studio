@@ -3,18 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contactos | Tatu Shop</title>
+  <title>Contactos | BlackLine Studio</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Animação da notificação (se aparecer) */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, -20px); }
+      to   { opacity: 1; transform: translate(-50%, 0); }
+    }
+    .animate-fade-in {
+      animation: fadeIn 0.5s ease-out forwards;
+    }
+  </style>
 </head>
 
-<body class="bg-gradient-to-br from-neutral-900 via-neutral-800 to-black flex flex-col min-h-screen text-gray-200">
+<body class="bg-gradient-to-br from-neutral-900 via-neutral-800 to-black text-gray-200 min-h-screen flex flex-col">
 
-  <!-- Navbar -->
+<!-- Notificação flutuante de perfil incompleto (aparece só na primeira vez) -->
+<div id="profile-notification" class="hidden fixed top-4 left-1/2 -translate-x-1/2 bg-neutral-800 border border-red-600 text-gray-200 px-6 py-4 rounded-lg shadow-2xl z-50 flex items-center space-x-4 animate-fade-in">
+  <span>Atualize o seu perfil para uma melhor experiência!</span>
+  <a href="perfil.html" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm font-medium transition">
+    Ir ao Perfil
+  </a>
+  <button id="close-profile-notification" class="text-gray-400 hover:text-white">✕</button>
+</div>
+
+<!-- Navbar fixo com logo no canto esquerdo -->
 <nav class="bg-black border-b border-neutral-800 text-white fixed w-full top-0 z-50">
   <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
     <!-- Logo + Nome no canto superior esquerdo -->
     <a href="index.html" class="flex items-center space-x-3">
-      <img src="assets/imagens/logo.png" alt="Logo BlackLine Studio" class="h-10 w-10 object-contain"> <!-- Ajusta o caminho e tamanho da tua logo -->
+      <img src="assets/imagens/logo.png" alt="Logo BlackLine Studio" class="h-10 w-10 object-contain">
       <h1 class="text-2xl md:text-3xl font-extrabold tracking-wide text-white">BlackLine Studio</h1>
     </a>
 
@@ -26,7 +45,7 @@
       <li><a href="booking.html" class="hover:text-red-500 transition">Agendamentos</a></li>
       <li><a href="contact.html" class="hover:text-red-500 transition">Contactos</a></li>
 
-      <!-- Links dinâmicos (login cliente vs perfil/logout) -->
+      <!-- Links dinâmicos -->
       <li id="guest-links">
         <a href="client-login.html" class="hover:text-red-500 transition">Área Cliente</a>
       </li>
@@ -42,122 +61,95 @@
   </div>
 </nav>
 
-<!-- Espaço para evitar que o conteúdo fique por baixo do navbar fixo -->
-<div class="h-20"></div> <!-- Ajusta a altura conforme o teu navbar -->
+<!-- Espaço para navbar fixo -->
+<div class="h-20"></div>
 
-  <!-- Conteúdo principal -->
-  <main class="flex-grow container mx-auto px-6 py-16">
+<main class="flex-grow container mx-auto px-6 py-16">
+  <h2 class="text-4xl font-extrabold text-center mb-4 text-white">
+    Contacta o Estúdio
+  </h2>
+  <p class="text-center text-gray-400 mb-16 max-w-2xl mx-auto">
+    Tens alguma ideia, dúvida ou queres marcar uma sessão?  
+    Fala connosco ou visita o nosso estúdio.
+  </p>
 
-    <h2 class="text-4xl font-extrabold text-center mb-4 text-white">
-      Contacta o Estúdio
-    </h2>
-    <p class="text-center text-gray-400 mb-16 max-w-2xl mx-auto">
-      Tens alguma ideia, dúvida ou queres marcar uma sessão?
-      Fala connosco ou visita o nosso estúdio.
-    </p>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-6xl mx-auto">
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-6xl mx-auto">
+    <!-- Informações do Estúdio -->
+    <div class="bg-neutral-900 border border-neutral-800 p-8 rounded-2xl shadow-xl">
+      <h3 class="text-2xl font-bold text-red-500 mb-6">📍 Estúdio</h3>
 
-      <!-- Informações da Loja -->
-      <div class="bg-neutral-900 border border-neutral-800 p-8 rounded-2xl shadow-xl">
-        <h3 class="text-2xl font-bold text-red-500 mb-6">📍 Estúdio</h3>
+      <div class="space-y-4 text-gray-300">
+        <p><strong>Morada:</strong><br>
+          Rua Ink Street, nº 13<br>
+          1000-000 Lisboa
+        </p>
 
-        <div class="space-y-4 text-gray-300">
-          <p><strong>Morada:</strong><br>
-            Rua Ink Street, nº 13<br>
-            1000-000 Lisboa
-          </p>
+        <p><strong>Telefone:</strong><br>
+          +351 911 222 333
+        </p>
 
-          <p><strong>Telefone:</strong><br>
-            +351 911 222 333
-          </p>
+        <p><strong>Email:</strong><br>
+          contacto@blacklinestudio.pt
+        </p>
 
-          <p><strong>Email:</strong><br>
-            contacto@tatushop.pt
-          </p>
-
-          <p><strong>Horário:</strong><br>
-            Segunda a Sexta: 11h – 20h<br>
-            Sábado: 12h – 18h<br>
-            Domingo: Encerrado
-          </p>
-        </div>
-
-        <div class="mt-8">
-          <h4 class="font-semibold text-red-500 mb-2">Redes Sociais</h4>
-          <div class="flex space-x-6">
-            <a href="#" class="hover:text-red-400 transition">Instagram</a>
-            <a href="#" class="hover:text-red-400 transition">Facebook</a>
-          </div>
-        </div>
+        <p><strong>Horário:</strong><br>
+          Segunda a Sexta: 11h – 20h<br>
+          Sábado: 12h – 18h<br>
+          Domingo: Encerrado
+        </p>
       </div>
 
-      <!-- Formulário -->
-      <form id="contactForm" class="bg-neutral-900 border border-neutral-800 p-8 rounded-2xl shadow-xl">
-        <h3 class="text-2xl font-bold text-red-500 mb-6">✍️ Envia a tua ideia</h3>
-
-        <div class="mb-4">
-          <label class="block text-gray-300 font-semibold mb-1">Nome</label>
-          <input type="text" id="name" required
-                 class="w-full bg-neutral-800 border border-neutral-700 rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500">
+      <div class="mt-8">
+        <h4 class="font-semibold text-red-500 mb-2">Redes Sociais</h4>
+        <div class="flex space-x-6">
+          <a href="#" class="hover:text-red-400 transition">Instagram</a>
+          <a href="#" class="hover:text-red-400 transition">Facebook</a>
         </div>
-
-        <div class="mb-4">
-          <label class="block text-gray-300 font-semibold mb-1">Email</label>
-          <input type="email" id="email" required
-                 class="w-full bg-neutral-800 border border-neutral-700 rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500">
-        </div>
-
-        <div class="mb-6">
-          <label class="block text-gray-300 font-semibold mb-1">Mensagem</label>
-          <textarea id="message" rows="4" required
-                    class="w-full bg-neutral-800 border border-neutral-700 rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500"></textarea>
-        </div>
-
-        <button type="submit"
-                class="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-bold tracking-wide transition">
-          Enviar Mensagem
-        </button>
-
-        <p id="successMessage" class="text-green-400 mt-4 text-center hidden">
-          ✅ Mensagem enviada com sucesso!
-        </p>
-      </form>
-
+      </div>
     </div>
-  </main>
 
-  <!-- Footer -->
-  <footer class="bg-black border-t border-neutral-800 text-gray-400 text-center py-4">
-    <p>© <span id="ano"></span> Tatu Shop — Todos os direitos reservados</p>
-  </footer>
+    <!-- Formulário de Contacto -->
+    <form id="contact-form" class="bg-neutral-900 border border-neutral-800 p-8 rounded-2xl shadow-xl space-y-6">
+      <h3 class="text-2xl font-bold text-red-500 mb-6">✍️ Envia a tua ideia</h3>
 
-  <!-- Firebase -->
-  <script type="module" src="firebase.js"></script>
+      <div>
+        <label for="nome" class="block text-sm font-medium text-gray-300 mb-2">Nome</label>
+        <input id="nome" type="text" required class="w-full px-4 py-3 bg-neutral-950 border border-neutral-700 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/30 transition" placeholder="O teu nome" />
+      </div>
 
-  <!-- Script -->
-  <script>
-    document.getElementById("ano").textContent = new Date().getFullYear();
+      <div>
+        <label for="email" class="block text-sm font-medium text-gray-300 mb-2">Email</label>
+        <input id="email" type="email" required class="w-full px-4 py-3 bg-neutral-950 border border-neutral-700 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/30 transition" placeholder="teu@email.com" />
+      </div>
 
-    document.getElementById("contactForm").addEventListener("submit", function(e) {
-      e.preventDefault();
+      <div>
+        <label for="mensagem" class="block text-sm font-medium text-gray-300 mb-2">Mensagem</label>
+        <textarea id="mensagem" rows="5" required class="w-full px-4 py-3 bg-neutral-950 border border-neutral-700 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/30 transition" placeholder="Escreve aqui a tua mensagem..."></textarea>
+      </div>
 
-      const name = document.getElementById("name").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const message = document.getElementById("message").value.trim();
+      <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-bold tracking-wide transition duration-300">
+        Enviar Mensagem
+      </button>
 
-      if (typeof saveMessage === "function") {
-        saveMessage(name, email, message);
-      }
+      <div id="contact-message" class="mt-4 text-center text-sm font-medium hidden"></div>
+    </form>
+  </div>
+</main>
 
-      document.getElementById("successMessage").classList.remove("hidden");
-      this.reset();
-    });
-  </script>
+<footer class="bg-black border-t border-neutral-800 text-gray-400 text-center py-4 mt-auto">
+  <p>© <span id="ano"></span> BlackLine Studio — Todos os direitos reservados</p>
+</footer>
 
-</body>
+<!-- Scripts -->
+<script>
+  document.getElementById("ano").textContent = new Date().getFullYear();
+</script>
+
+<script type="module" src="assets/js/contact.js"></script>
+
 <script type="module">
-  import { auth, onAuthStateChanged, signOut } from './assets/js/firebase.js';
+  import { auth, onAuthStateChanged, signOut, db, doc, getDoc } from './assets/js/firebase.js';
 
   onAuthStateChanged(auth, async (user) => {
     const guestLinks = document.getElementById('guest-links');
@@ -165,11 +157,9 @@
     const logoutBtn = document.getElementById('logout-btn');
 
     if (user) {
-      // Utilizador logado → mostra Perfil + Logout
       guestLinks?.classList.add('hidden');
       userLinks?.classList.remove('hidden');
 
-      // Logout funcional
       if (logoutBtn) {
         logoutBtn.onclick = async () => {
           await signOut(auth);
@@ -177,24 +167,26 @@
         };
       }
 
-      // Verifica se é "primeiro login" ou perfil incompleto
-      // (aqui usamos displayName como indicador simples – se vazio, assume incompleto)
-      if (!user.displayName) {
-        showFirstLoginNotification();
+      // Notificação única se perfil incompleto
+      try {
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        if (!userDoc.exists() || !userDoc.data().profileCompleted) {
+          showFirstLoginNotification();
+        }
+      } catch (err) {
+        console.error('Erro ao verificar perfil:', err);
       }
     } else {
-      // Não logado → mostra Área Cliente
       guestLinks?.classList.remove('hidden');
       userLinks?.classList.add('hidden');
     }
   });
 
-  // Função para mostrar notificação de topo
   function showFirstLoginNotification() {
     const notification = document.createElement('div');
     notification.innerHTML = `
-      <div class="fixed top-4 left-1/2 transform -translate-x-1/2 bg-neutral-800 border border-red-600 text-gray-200 px-6 py-4 rounded-lg shadow-2xl z-50 flex items-center space-x-4 animate-fade-in">
-        <span>Atualize o seu perfil para uma melhor experiência!</span>
+      <div class="fixed top-4 left-1/2 -translate-x-1/2 bg-neutral-800 border border-red-600 text-gray-200 px-6 py-4 rounded-lg shadow-2xl z-50 flex items-center space-x-4 animate-fade-in">
+        <span>Atualize o teu perfil para uma melhor experiência!</span>
         <a href="perfil.html" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm font-medium transition">
           Ir ao Perfil
         </a>
@@ -204,51 +196,11 @@
 
     document.body.appendChild(notification);
 
-    // Fechar ao clicar no X
-    document.getElementById('close-notification')?.addEventListener('click', () => {
-      notification.remove();
-    });
+    document.getElementById('close-notification')?.addEventListener('click', () => notification.remove());
 
-    // Desaparece sozinho após 12 segundos
     setTimeout(() => notification.remove(), 12000);
   }
 </script>
 
-<style>
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-20px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  .animate-fade-in {
-    animation: fadeIn 0.5s ease-out forwards;
-  }
-</style>
+</body>
 </html>
-<script type="module">
-  import { auth, onAuthStateChanged, signOut } from './assets/js/firebase.js';  // ajusta o caminho se necessário
-
-  onAuthStateChanged(auth, (user) => {
-    const guestLinks = document.getElementById('guest-links');
-    const userLinks = document.getElementById('user-links');
-    const logoutBtn = document.getElementById('logout-btn');
-
-    if (user) {
-      // Logado: mostra Perfil + Sair
-      if (guestLinks) guestLinks.classList.add('hidden');
-      if (userLinks) userLinks.classList.remove('hidden');
-
-      // Logout
-      if (logoutBtn) {
-        logoutBtn.onclick = () => {
-          signOut(auth).then(() => {
-            window.location.href = 'index.html';
-          });
-        };
-      }
-    } else {
-      // Não logado: mostra Área Cliente
-      if (guestLinks) guestLinks.classList.remove('hidden');
-      if (userLinks) userLinks.classList.add('hidden');
-    }
-  });
-</script>

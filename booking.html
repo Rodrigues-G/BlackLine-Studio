@@ -2,13 +2,25 @@
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Agendamentos | BlackLine Studio</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Animação da notificação */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, -20px); }
+      to   { opacity: 1; transform: translate(-50%, 0); }
+    }
+    .animate-fade-in {
+      animation: fadeIn 0.5s ease-out forwards;
+    }
+  </style>
 </head>
 
 <body class="bg-gradient-to-br from-neutral-900 via-neutral-800 to-black text-gray-200 min-h-screen flex flex-col">
-  <!-- Notificação flutuante (aparece só se não logado) -->
-<div id="booking-notification" class="hidden fixed top-20 left-1/2 transform -translate-x-1/2 bg-red-900/90 border border-red-600 text-white px-8 py-4 rounded-xl shadow-2xl z-50 flex items-center space-x-6 animate-fade-in">
+
+<!-- Notificação flutuante (aparece só se não logado) -->
+<div id="booking-notification" class="hidden fixed top-20 left-1/2 -translate-x-1/2 bg-red-900/90 border border-red-600 text-white px-8 py-5 rounded-xl shadow-2xl z-50 flex items-center gap-6">
   <span class="font-medium">Para agendar uma sessão, faz login ou cria uma conta.</span>
   <a href="client-login.html" class="bg-red-600 hover:bg-red-700 px-5 py-2 rounded-lg text-sm font-bold transition">
     Entrar / Criar
@@ -16,11 +28,12 @@
   <button id="close-notification" class="text-white hover:text-gray-300 text-xl font-bold">✕</button>
 </div>
 
+<!-- Navbar fixo com logo no canto esquerdo -->
 <nav class="bg-black border-b border-neutral-800 text-white fixed w-full top-0 z-50">
   <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
     <!-- Logo + Nome no canto superior esquerdo -->
     <a href="index.html" class="flex items-center space-x-3">
-      <img src="assets/imagens/logo.png" alt="Logo BlackLine Studio" class="h-10 w-10 object-contain"> <!-- Ajusta o caminho e tamanho da tua logo -->
+      <img src="assets/imagens/logo.png" alt="Logo BlackLine Studio" class="h-10 w-10 object-contain">
       <h1 class="text-2xl md:text-3xl font-extrabold tracking-wide text-white">BlackLine Studio</h1>
     </a>
 
@@ -32,7 +45,7 @@
       <li><a href="booking.html" class="hover:text-red-500 transition">Agendamentos</a></li>
       <li><a href="contact.html" class="hover:text-red-500 transition">Contactos</a></li>
 
-      <!-- Links dinâmicos (login cliente vs perfil/logout) -->
+      <!-- Links dinâmicos -->
       <li id="guest-links">
         <a href="client-login.html" class="hover:text-red-500 transition">Área Cliente</a>
       </li>
@@ -48,37 +61,56 @@
   </div>
 </nav>
 
-<!-- Espaço para evitar que o conteúdo fique por baixo do navbar fixo -->
-<div class="h-20"></div> <!-- Ajusta a altura conforme o teu navbar -->
+<!-- Espaço para não sobrepor conteúdo com navbar fixo -->
+<div class="h-20"></div>
 
 <main class="flex-grow flex items-center justify-center px-6 py-16">
-  <form class="bg-neutral-900 border border-neutral-800 p-8 rounded-xl w-full max-w-md">
+  <form id="booking-form" class="bg-neutral-900 border border-neutral-800 p-10 rounded-xl w-full max-w-lg space-y-6">
     <h2 class="text-3xl font-bold text-red-500 mb-6 text-center">Marcar Sessão</h2>
 
-    <input type="text" placeholder="Nome"
-      class="w-full mb-4 p-3 bg-neutral-800 border border-neutral-700 rounded text-white">
+    <div>
+      <label for="nome" class="block text-sm font-medium text-gray-300 mb-2">Nome</label>
+      <input id="nome" type="text" required class="w-full px-4 py-3 bg-neutral-950 border border-neutral-700 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/30 transition" placeholder="O teu nome" />
+    </div>
 
-    <input type="email" placeholder="Email"
-      class="w-full mb-4 p-3 bg-neutral-800 border border-neutral-700 rounded text-white">
+    <div>
+      <label for="email" class="block text-sm font-medium text-gray-300 mb-2">Email</label>
+      <input id="email" type="email" required class="w-full px-4 py-3 bg-neutral-950 border border-neutral-700 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/30 transition" placeholder="teu@email.com" />
+    </div>
 
-    <textarea placeholder="Ideia da tatuagem"
-      class="w-full mb-6 p-3 bg-neutral-800 border border-neutral-700 rounded text-white"></textarea>
+    <div>
+      <label for="mensagem" class="block text-sm font-medium text-gray-300 mb-2">Ideia da Tatuagem</label>
+      <textarea id="mensagem" rows="4" required class="w-full px-4 py-3 bg-neutral-950 border border-neutral-700 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/30 transition" placeholder="Descreve a tua ideia..."></textarea>
+    </div>
 
-    <button class="w-full bg-red-600 hover:bg-red-700 py-3 rounded font-bold">
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label for="data" class="block text-sm font-medium text-gray-300 mb-2">Data</label>
+        <input id="data" type="date" required class="w-full px-4 py-3 bg-neutral-950 border border-neutral-700 rounded-lg text-gray-200 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/30 transition" />
+      </div>
+      <div>
+        <label for="hora" class="block text-sm font-medium text-gray-300 mb-2">Hora</label>
+        <input id="hora" type="time" required class="w-full px-4 py-3 bg-neutral-950 border border-neutral-700 rounded-lg text-gray-200 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/30 transition" />
+      </div>
+    </div>
+
+    <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-bold tracking-wide transition duration-300">
       Enviar Pedido
     </button>
   </form>
 </main>
 
-<footer class="bg-black border-t border-neutral-800 text-gray-400 text-center py-4">
-  <p>© <span id="ano"></span> BlackLine Studio</p>
+<footer class="bg-black border-t border-neutral-800 text-gray-400 text-center py-4 mt-auto">
+  <p>© <span id="ano"></span> BlackLine Studio — Todos os direitos reservados</p>
 </footer>
 
+<!-- Scripts -->
 <script>
   document.getElementById("ano").textContent = new Date().getFullYear();
 </script>
 
-</body>
+<script type="module" src="assets/js/booking.js"></script>
+
 <script type="module">
   import { auth, onAuthStateChanged, signOut } from './assets/js/firebase.js';
 
@@ -88,11 +120,9 @@
     const logoutBtn = document.getElementById('logout-btn');
 
     if (user) {
-      // Utilizador logado → mostra Perfil + Logout
       guestLinks?.classList.add('hidden');
       userLinks?.classList.remove('hidden');
 
-      // Logout funcional
       if (logoutBtn) {
         logoutBtn.onclick = async () => {
           await signOut(auth);
@@ -100,23 +130,25 @@
         };
       }
 
-      // Verifica se é "primeiro login" ou perfil incompleto
-      // (aqui usamos displayName como indicador simples – se vazio, assume incompleto)
-      if (!user.displayName) {
-        showFirstLoginNotification();
+      // Notificação única se perfil incompleto
+      try {
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        if (!userDoc.exists() || !userDoc.data().profileCompleted) {
+          showFirstLoginNotification();
+        }
+      } catch (err) {
+        console.error('Erro ao verificar perfil:', err);
       }
     } else {
-      // Não logado → mostra Área Cliente
       guestLinks?.classList.remove('hidden');
       userLinks?.classList.add('hidden');
     }
   });
 
-  // Função para mostrar notificação de topo
   function showFirstLoginNotification() {
     const notification = document.createElement('div');
     notification.innerHTML = `
-      <div class="fixed top-4 left-1/2 transform -translate-x-1/2 bg-neutral-800 border border-red-600 text-gray-200 px-6 py-4 rounded-lg shadow-2xl z-50 flex items-center space-x-4 animate-fade-in">
+      <div class="fixed top-4 left-1/2 -translate-x-1/2 bg-neutral-800 border border-red-600 text-gray-200 px-6 py-4 rounded-lg shadow-2xl z-50 flex items-center space-x-4 animate-fade-in">
         <span>Atualize o seu perfil para uma melhor experiência!</span>
         <a href="perfil.html" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm font-medium transition">
           Ir ao Perfil
@@ -127,72 +159,11 @@
 
     document.body.appendChild(notification);
 
-    // Fechar ao clicar no X
-    document.getElementById('close-notification')?.addEventListener('click', () => {
-      notification.remove();
-    });
+    document.getElementById('close-notification')?.addEventListener('click', () => notification.remove());
 
-    // Desaparece sozinho após 12 segundos
     setTimeout(() => notification.remove(), 12000);
   }
 </script>
 
-<style>
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-20px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  .animate-fade-in {
-    animation: fadeIn 0.5s ease-out forwards;
-  }
-</style>
-<style>
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translate(-50%, -20px); }
-    to { opacity: 1; transform: translate(-50%, 0); }
-  }
-  .animate-fade-in {
-    animation: fadeIn 0.5s ease-out forwards;
-  }
-</style>
+</body>
 </html>
-
-<form id="booking-form">
-  <input id="nome" type="text" required>
-  <input id="email" type="email" required>
-  <textarea id="mensagem" required></textarea>
-  <input id="data" type="date" required>
-  <input id="hora" type="time" required>
-  <button type="submit">Marcar</button>
-</form>
-<script type="module" src="assets/js/booking.js"></script>
-<div id="booking-message" class="mt-4"></div>
-<script type="module" src="assets/js/booking.js"></script>
-<script type="module">
-  import { auth, onAuthStateChanged, signOut } from './assets/js/firebase.js';  // ajusta o caminho se necessário
-
-  onAuthStateChanged(auth, (user) => {
-    const guestLinks = document.getElementById('guest-links');
-    const userLinks = document.getElementById('user-links');
-    const logoutBtn = document.getElementById('logout-btn');
-
-    if (user) {
-      // Logado: mostra Perfil + Sair
-      if (guestLinks) guestLinks.classList.add('hidden');
-      if (userLinks) userLinks.classList.remove('hidden');
-
-      // Logout
-      if (logoutBtn) {
-        logoutBtn.onclick = () => {
-          signOut(auth).then(() => {
-            window.location.href = 'index.html';
-          });
-        };
-      }
-    } else {
-      // Não logado: mostra Área Cliente
-      if (guestLinks) guestLinks.classList.remove('hidden');
-      if (userLinks) userLinks.classList.add('hidden');
-    }
-  });
-</script>

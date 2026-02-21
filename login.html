@@ -1,18 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login Admin | BlackLine Studio</title>
-  
-  <!-- Tailwind CSS CDN (se ainda não tens no projeto, adiciona isto; senão remove e usa o teu link) -->
   <script src="https://cdn.tailwindcss.com"></script>
   
-  <!-- Teu CSS custom se tiveres -->
-  <!-- <link rel="stylesheet" href="assets/css/style.css"> -->
-  
   <style>
-    /* Estilos extras para vibe tattoo/dark */
+    /* Vibe tattoo/dark consistente */
     body {
       background: #0f0f0f;
       color: #e5e5e5;
@@ -35,8 +30,12 @@
       border: 1px solid #333;
       box-shadow: 0 10px 30px rgba(0,0,0,0.8);
     }
+    .message {
+      transition: opacity 0.3s ease;
+    }
   </style>
 </head>
+
 <body class="min-h-screen flex items-center justify-center">
 
   <div class="card p-10 rounded-xl w-full max-w-md mx-4">
@@ -46,24 +45,26 @@
     </div>
 
     <!-- Formulário de login -->
-    <form id="login-form" class="space-y-6">
+    <form id="admin-login-form" class="space-y-6">
       <div>
-        <label for="email" class="block text-sm font-medium text-gray-300">Email</label>
+        <label for="email" class="block text-sm font-medium text-gray-300 mb-2">Email</label>
         <input 
           id="email" 
           type="email" 
           required 
+          autocomplete="email"
           class="mt-1 block w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600 glow-red transition"
           placeholder="admin@blackline.pt"
         />
       </div>
 
       <div>
-        <label for="password" class="block text-sm font-medium text-gray-300">Password</label>
+        <label for="password" class="block text-sm font-medium text-gray-300 mb-2">Password</label>
         <input 
           id="password" 
           type="password" 
           required 
+          autocomplete="current-password"
           class="mt-1 block w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600 glow-red transition"
           placeholder="••••••••"
         />
@@ -77,49 +78,72 @@
       </button>
     </form>
 
-    <!-- Mensagens de erro/sucesso -->
-    <div id="message" class="mt-4 text-center text-sm font-medium hidden"></div>
+    <!-- Área para mensagens (sucesso/erro) -->
+    <div id="message" class="mt-4 text-center text-sm font-medium message hidden"></div>
 
-    <div class="mt-6 text-center">
+    <div class="mt-6 text-center text-sm">
       <a href="index.html" class="text-gray-400 hover:text-red-500 transition">Voltar ao site</a>
     </div>
   </div>
 
-  <!-- Scripts -->
   <script type="module">
     import { auth, signInWithEmailAndPassword } from './assets/js/firebase.js';  // ajusta o caminho se necessário
 
-    const form = document.getElementById('login-form');
+    const form = document.getElementById('admin-login-form');
     const messageDiv = document.getElementById('message');
+
+    if (!form || !messageDiv) {
+      console.error('Elementos do formulário ou mensagem não encontrados.');
+    }
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
+      const email = document.getElementById('email')?.value.trim();
+      const password = document.getElementById('password')?.value;
 
-      messageDiv.classList.remove('hidden', 'text-green-500', 'text-red-500');
-      messageDiv.textContent = 'A autenticar...';
+      if (!email || !password) {
+        showMessage('Preencha email e password.', 'text-red-500');
+        return;
+      }
+
+      showMessage('A autenticar...', 'text-gray-400');
 
       try {
         await signInWithEmailAndPassword(auth, email, password);
-        messageDiv.classList.add('text-green-500');
-        messageDiv.textContent = 'Login bem-sucedido! Redirecionando...';
+        showMessage('Login bem-sucedido! Redirecionando...', 'text-green-500');
         setTimeout(() => {
-          window.location.href = 'admin/dashboard.html';  // ou o caminho que tens
+          window.location.href = 'admin/dashboard.html';  // ajusta o caminho se necessário
         }, 1500);
       } catch (error) {
-        messageDiv.classList.add('text-red-500');
+        console.error('Erro no login admin:', error.code, error.message);
+
         let msg = 'Erro ao entrar. Verifica as credenciais.';
-        if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-          msg = 'Email ou password incorretos.';
-        } else if (error.code === 'auth/too-many-requests') {
-          msg = 'Muitas tentativas. Tenta novamente mais tarde.';
+        switch (error.code) {
+          case 'auth/invalid-credential':
+          case 'auth/wrong-password':
+            msg = 'Email ou password incorretos.';
+            break;
+          case 'auth/user-not-found':
+            msg = 'Utilizador não encontrado.';
+            break;
+          case 'auth/too-many-requests':
+            msg = 'Muitas tentativas. Aguarde alguns minutos.';
+            break;
+          case 'auth/invalid-email':
+            msg = 'Email inválido.';
+            break;
         }
-        messageDiv.textContent = msg;
-        console.error(error);
+
+        showMessage(msg, 'text-red-500');
       }
     });
+
+    function showMessage(text, colorClass) {
+      messageDiv.classList.remove('hidden', 'text-green-500', 'text-red-500', 'text-gray-400');
+      messageDiv.classList.add(colorClass);
+      messageDiv.textContent = text;
+    }
   </script>
 </body>
 </html>

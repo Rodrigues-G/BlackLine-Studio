@@ -2,56 +2,207 @@
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
-  <title>Dashboard Admin - BlackLine</title>
-  <!-- teu CSS/Tailwind -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Admin | BlackLine Studio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Estilos extras para consistência com o tema */
+    .card { background: #1a1a1a; border: 1px solid #333; }
+    .btn-delete { background: #dc2626; }
+    .btn-delete:hover { background: #b91c1c; }
+  </style>
 </head>
-<body>
-  <h1>Dashboard</h1>
-  <button id="logout">Sair</button>
+<body class="bg-gradient-to-br from-neutral-900 via-neutral-800 to-black text-gray-200 min-h-screen">
 
-  <h2>Marcações Pendentes</h2>
-  <div id="bookings-list"></div>
+  <!-- Navbar simples para dashboard (podes copiar o teu completo) -->
+  <nav class="bg-black border-b border-neutral-800 text-white p-4">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <h1 class="text-xl font-bold">BlackLine Studio - Admin</h1>
+      <div class="flex items-center space-x-4">
+        <span>Bem-vindo, <span id="admin-email" class="font-medium"></span></span>
+        <button id="logout-btn" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm transition">
+          Sair
+        </button>
+      </div>
+    </div>
+  </nav>
 
-  <h2>Contactos</h2>
-  <div id="contacts-list"></div>
+  <div class="max-w-7xl mx-auto px-6 py-10">
+    <h1 class="text-3xl font-extrabold text-white mb-8">Dashboard Administrativo</h1>
+
+    <!-- Marcações -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold text-red-500 mb-6">Marcações Pendentes</h2>
+      <div id="bookings-list" class="grid gap-6"></div>
+    </section>
+
+    <!-- Contactos -->
+    <section>
+      <h2 class="text-2xl font-bold text-red-500 mb-6">Contactos Recebidos</h2>
+      <div id="contacts-list" class="grid gap-6"></div>
+    </section>
+  </div>
 
   <script type="module">
-    import { auth, db, getDocs, collection, query, orderBy, deleteDoc, doc, signOut } from '../assets/js/firebase.js';
+    import {
+      auth,
+      db,
+      getDocs,
+      collection,
+      query,
+      orderBy,
+      deleteDoc,
+      doc,
+      onAuthStateChanged,
+      signOut
+    } from '../assets/js/firebase.js';  // ajusta o caminho se necessário
 
+    // ────────────────────────────────────────────────
+    // Proteção: só admin logado entra
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.href = '../login.html'; // ou '/login.html'
+        return;
+      }
+
+      // Mostra email do admin
+      document.getElementById('admin-email').textContent = user.email;
+
+      // Carrega dados só após login confirmado
+      loadBookings();
+      loadContacts();
+    });
+
+    // ────────────────────────────────────────────────
     // Logout
-    document.getElementById('logout').addEventListener('click', () => signOut(auth));
+    document.getElementById('logout-btn').addEventListener('click', async () => {
+      try {
+        await signOut(auth);
+        window.location.href = '../login.html';
+      } catch (err) {
+        console.error('Erro ao sair:', err);
+        alert('Erro ao sair. Tente novamente.');
+      }
+    });
 
-    // Carrega bookings
+    // ────────────────────────────────────────────────
+    // Carregar Marcações
     async function loadBookings() {
-      const q = query(collection(db, 'bookings'), orderBy('createdAt', 'desc'));
-      const snapshot = await getDocs(q);
-      const list = document.getElementById('bookings-list');
-      list.innerHTML = '';
-      snapshot.forEach((d) => {
-        const data = d.data();
-        const div = document.createElement('div');
-        div.innerHTML = `
-          <p><strong>${data.nome}</strong> - ${data.email} | ${data.data} ${data.hora}</p>
-          <p>${data.mensagem}</p>
-          <button onclick="deleteBooking('${d.id}')">Apagar</button>
-          <hr>
-        `;
-        list.appendChild(div);
-      });
+      const bookingsList = document.getElementById('bookings-list');
+      bookingsList.innerHTML = '<p class="text-gray-400">A carregar marcações...</p>';
+
+      try {
+        const q = query(collection(db, 'bookings'), orderBy('createdAt', 'desc'));
+        const snapshot = await getDocs(q);
+
+        if (snapshot.empty) {
+          bookingsList.innerHTML = '<p class="text-gray-400">Nenhuma marcação encontrada.</p>';
+          return;
+        }
+
+        bookingsList.innerHTML = '';
+        snapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+          const div = document.createElement('div');
+          div.className = 'card p-6 rounded-xl shadow-lg';
+          div.innerHTML = `
+            <div class="flex justify-between items-start mb-4">
+              <div>
+                <p class="font-bold text-lg">${data.nome || 'Anónimo'}</p>
+                <p class="text-gray-400">${data.email || 'Sem email'}</p>
+                <p class="text-sm text-gray-500">${data.data} às ${data.hora}</p>
+              </div>
+              <button 
+                onclick="deleteBooking('${docSnap.id}')"
+                class="btn-delete text-white px-4 py-2 rounded hover:bg-red-800 transition"
+              >
+                Apagar
+              </button>
+            </div>
+            <p class="text-gray-300">${data.mensagem || 'Sem descrição'}</p>
+            <hr class="my-4 border-neutral-700">
+          `;
+          bookingsList.appendChild(div);
+        });
+      } catch (err) {
+        console.error('Erro ao carregar bookings:', err);
+        bookingsList.innerHTML = '<p class="text-red-500">Erro ao carregar marcações.</p>';
+      }
     }
 
+    // ────────────────────────────────────────────────
+    // Carregar Contactos
+    async function loadContacts() {
+      const contactsList = document.getElementById('contacts-list');
+      contactsList.innerHTML = '<p class="text-gray-400">A carregar contactos...</p>';
+
+      try {
+        const q = query(collection(db, 'contacts'), orderBy('createdAt', 'desc'));
+        const snapshot = await getDocs(q);
+
+        if (snapshot.empty) {
+          contactsList.innerHTML = '<p class="text-gray-400">Nenhum contacto encontrado.</p>';
+          return;
+        }
+
+        contactsList.innerHTML = '';
+        snapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+          const date = data.createdAt?.toDate?.() || new Date();
+          const formattedDate = date.toLocaleString('pt-PT');
+
+          const div = document.createElement('div');
+          div.className = 'card p-6 rounded-xl shadow-lg';
+          div.innerHTML = `
+            <div class="flex justify-between items-start mb-4">
+              <div>
+                <p class="font-bold text-lg">${data.nome || 'Anónimo'}</p>
+                <p class="text-gray-400">${data.email || 'Sem email'}</p>
+                <p class="text-sm text-gray-500">${formattedDate}</p>
+              </div>
+              <button 
+                onclick="deleteContact('${docSnap.id}')"
+                class="btn-delete text-white px-4 py-2 rounded hover:bg-red-800 transition"
+              >
+                Apagar
+              </button>
+            </div>
+            <p class="text-gray-300">${data.mensagem || 'Sem mensagem'}</p>
+            <hr class="my-4 border-neutral-700">
+          `;
+          contactsList.appendChild(div);
+        });
+      } catch (err) {
+        console.error('Erro ao carregar contactos:', err);
+        contactsList.innerHTML = '<p class="text-red-500">Erro ao carregar contactos.</p>';
+      }
+    }
+
+    // ────────────────────────────────────────────────
+    // Funções de apagar
     window.deleteBooking = async (id) => {
-      if (confirm('Apagar mesmo?')) {
-        await deleteDoc(doc(db, 'bookings', id));
-        loadBookings();
+      if (confirm('Tem certeza que deseja apagar esta marcação?')) {
+        try {
+          await deleteDoc(doc(db, 'bookings', id));
+          loadBookings();
+        } catch (err) {
+          alert('Erro ao apagar marcação.');
+          console.error(err);
+        }
       }
     };
 
-    // Carrega contactos (similar)
-    // ... adiciona função loadContacts() igual mas para 'contacts'
-
-    loadBookings();
-    // loadContacts();
+    window.deleteContact = async (id) => {
+      if (confirm('Tem certeza que deseja apagar este contacto?')) {
+        try {
+          await deleteDoc(doc(db, 'contacts', id));
+          loadContacts();
+        } catch (err) {
+          alert('Erro ao apagar contacto.');
+          console.error(err);
+        }
+      }
+    };
   </script>
 </body>
 </html>

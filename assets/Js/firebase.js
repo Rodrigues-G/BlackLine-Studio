@@ -1,11 +1,16 @@
-// assets/js/firebase.js
+// assets/js/firebase.js – versão expandida (opcional)
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
 import {
   getAuth,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
-  signOut
+  signOut,
+  updateProfile,
+  updateEmail,
+  reauthenticateWithCredential,
+  EmailAuthProvider
 } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
 
 import {
@@ -15,12 +20,23 @@ import {
   getDocs,
   deleteDoc,
   doc,
+  getDoc,
+  setDoc,
   query,
   orderBy,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
 
-// A TUA CONFIG (copia exatamente do Firebase Console > Project Settings > SDK setup)
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL
+} from "https://www.gstatic.com/firebasejs/10.13.1/firebase-storage.js";
+
+// Opcional: App Check (anti-abuso) – ativa no console primeiro
+// import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app-check.js";
+
 const firebaseConfig = {
   apiKey: "AIzaSyDwUD2aQ1vi4hSOmtHKJk3f7ja3A1Q_9PI",
   authDomain: "tatu-shop.firebaseapp.com",
@@ -31,28 +47,48 @@ const firebaseConfig = {
   measurementId: "G-PLHL0L10BS"
 };
 
-// Inicializa UMA VEZ
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storage = getStorage(app);
 
-// Exporta TUDO o que precisas (obrigatório!)
+// Opcional: Ativa App Check (depois de configurar reCAPTCHA no console)
+try {
+  // initializeAppCheck(app, {
+  //   provider: new ReCaptchaV3Provider('teu-recaptcha-site-key'),
+  //   isTokenAutoRefreshEnabled: true
+  // });
+  // console.log("App Check ativado");
+} catch (err) {
+  console.warn("App Check não ativado:", err);
+}
+
 export {
   app,
   auth,
   db,
+  storage,
   signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,     // ← esta faltava ou estava mal exportada
+  createUserWithEmailAndPassword,
   onAuthStateChanged,
   signOut,
+  updateProfile,
+  updateEmail,
+  reauthenticateWithCredential,
+  EmailAuthProvider,
   collection,
   addDoc,
   getDocs,
   deleteDoc,
   doc,
+  getDoc,
+  setDoc,
   query,
   orderBy,
-  serverTimestamp
+  serverTimestamp,
+  ref,
+  uploadBytes,
+  getDownloadURL
 };
 
-console.log("firebase.js carregado com sucesso");  // ajuda a depurar
+console.log("firebase.js carregado com sucesso");
