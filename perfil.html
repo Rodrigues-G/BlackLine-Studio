@@ -8,10 +8,6 @@
 </head>
 
 <body class="bg-gradient-to-br from-neutral-900 via-neutral-800 to-black text-gray-200 min-h-screen">
-
-  <!-- Teu navbar (copia o mesmo de index.html ou outras páginas) -->
-  <!-- ... insere aqui o <nav> completo com logo, links dinâmicos, etc. ... -->
-
   <div class="max-w-2xl mx-auto px-6 py-16">
     <h1 class="text-4xl font-extrabold text-center mb-10 text-white">O Teu Perfil</h1>
 
@@ -92,7 +88,6 @@
           type="submit" 
           class="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-bold tracking-wide transition duration-300"
         >
-          Guardar Alterações
         </button>
       </form>
 
@@ -117,7 +112,7 @@
       doc,
       getDoc,
       setDoc
-    } from './assets/js/firebase.js';  // ajusta o caminho se necessário
+    } from './assets/js/firebase.js';
 
     const form = document.getElementById('profile-form');
     const msg = document.getElementById('profile-message');
@@ -126,8 +121,6 @@
 
     let currentUser;
 
-    // ────────────────────────────────────────────────
-    // Proteção + carregar dados atuais
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
         window.location.href = 'client-login.html';
@@ -140,7 +133,7 @@
       document.getElementById('display-name').value = user.displayName || '';
       document.getElementById('email').value = user.email || '';
 
-      // Preenche foto e campos custom do Firestore
+      // Preenche foto e campos do Firestore
       try {
         const userDoc = await getDoc(doc(db, 'users', user.uid));
         if (userDoc.exists()) {
@@ -154,7 +147,6 @@
       }
     });
 
-    // ────────────────────────────────────────────────
     // Upload de foto
     photoInput.addEventListener('change', async (e) => {
       const file = e.target.files[0];
@@ -179,7 +171,6 @@
       }
     });
 
-    // ────────────────────────────────────────────────
     // Guardar alterações no perfil
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -203,7 +194,7 @@
         // Atualiza nome no Auth
         await updateProfile(currentUser, { displayName: name });
 
-        // Atualiza email (requer reautenticação se mudou)
+        // Atualiza email (requer reautenticação se for diferente)
         if (newEmail !== currentUser.email) {
           if (!currentPassword) throw new Error('Password atual necessária para alterar email.');
           const credential = EmailAuthProvider.credential(currentUser.email, currentPassword);
@@ -211,13 +202,13 @@
           await updateEmail(currentUser, newEmail);
         }
 
-        // Guarda tudo no Firestore (merge para não apagar outros campos)
+        // Guarda tudo no Firestore (com merge para não sobrescrever campos existentes)
         await setDoc(doc(db, 'users', currentUser.uid), {
           displayName: name,
           email: newEmail,
           phoneNumber: phone,
           birthDate: birthdate,
-          profileCompleted: true  // Marca como completo → notificação desaparece
+          profileCompleted: true // Flag para indicar que o perfil foi atualizado
         }, { merge: true });
 
         showMessage('Perfil atualizado com sucesso!', 'text-green-500');
@@ -233,8 +224,6 @@
       }
     });
 
-    // ────────────────────────────────────────────────
-    // Função auxiliar para mensagens
     function showMessage(text, colorClass) {
       msg.classList.remove('hidden', 'text-green-500', 'text-red-500', 'text-gray-400');
       msg.classList.add(colorClass);

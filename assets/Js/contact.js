@@ -1,9 +1,8 @@
 // assets/js/contact.js
-// Lógica do formulário de contactos – envio para Firestore (pode ser anónimo)
+// Lógica do formulário de contactos – envio para Firestore (sem necessidade de login)
 
 import { db, addDoc, collection, serverTimestamp } from './firebase.js';
 
-// ────────────────────────────────────────────────
 // Handler do formulário de contactos
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('contact-form');
@@ -16,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // Captura dos campos (ajusta os IDs conforme o teu HTML real)
+    // Captura dos campos do formulário (ajusta os ids conforme necessário)
     const nome     = document.getElementById('nome')?.value.trim()     || '';
     const email    = document.getElementById('email')?.value.trim()    || '';
     const mensagem = document.getElementById('mensagem')?.value.trim() || '';
@@ -38,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
         email,
         mensagem,
         createdAt: serverTimestamp(),
-        status: 'novo' // opcional – ajuda no dashboard admin
+        status: 'novo' // opcional – ajuda a organizar mensagens no dashboard admin
       });
 
       alert('Mensagem enviada com sucesso! Responderemos em breve.');

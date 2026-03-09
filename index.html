@@ -6,7 +6,7 @@
   <title>BlackLine Studio | Tattoo & Art</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* Animação da notificação (se aparecer) */
+    /* Animação da notificação */
     @keyframes fadeIn {
       from { opacity: 0; transform: translate(-50%, -20px); }
       to   { opacity: 1; transform: translate(-50%, 0); }
@@ -19,7 +19,7 @@
 
 <body class="bg-gradient-to-br from-neutral-900 via-neutral-800 to-black text-gray-200 min-h-screen flex flex-col">
 
-<!-- Notificação flutuante de perfil incompleto (aparece só na primeira vez) -->
+<!-- Notificação flutuante de perfil incompleto -->
 <div id="profile-notification" class="hidden fixed top-4 left-1/2 -translate-x-1/2 bg-neutral-800 border border-red-600 text-gray-200 px-6 py-4 rounded-lg shadow-2xl z-50 flex items-center space-x-4 animate-fade-in">
   <span>Atualize o teu perfil para uma melhor experiência!</span>
   <a href="perfil.html" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm font-medium transition">
@@ -45,7 +45,6 @@
       <li><a href="booking.html" class="hover:text-red-500 transition">Agendamentos</a></li>
       <li><a href="contact.html" class="hover:text-red-500 transition">Contactos</a></li>
 
-      <!-- Links dinâmicos -->
       <li id="guest-links">
         <a href="client-login.html" class="hover:text-red-500 transition">Área Cliente</a>
       </li>
@@ -109,7 +108,7 @@
   </div>
 </section>
 
-<!-- CTA FINAL -->
+<!-- Cita FINAL -->
 <section class="text-center px-6 py-24">
   <h3 class="text-3xl md:text-4xl font-extrabold text-white mb-8">
     Pronto para transformar a tua ideia em arte?

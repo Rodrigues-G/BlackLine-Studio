@@ -57,7 +57,6 @@
       signOut
     } from '../assets/js/firebase.js';  // ajusta o caminho se necessário
 
-    // ────────────────────────────────────────────────
     // Proteção: só admin logado entra
     onAuthStateChanged(auth, (user) => {
       if (!user) {
@@ -73,7 +72,6 @@
       loadContacts();
     });
 
-    // ────────────────────────────────────────────────
     // Logout
     document.getElementById('logout-btn').addEventListener('click', async () => {
       try {
@@ -85,7 +83,6 @@
       }
     });
 
-    // ────────────────────────────────────────────────
     // Carregar Marcações
     async function loadBookings() {
       const bookingsList = document.getElementById('bookings-list');
@@ -130,7 +127,6 @@
       }
     }
 
-    // ────────────────────────────────────────────────
     // Carregar Contactos
     async function loadContacts() {
       const contactsList = document.getElementById('contacts-list');
@@ -178,7 +174,6 @@
       }
     }
 
-    // ────────────────────────────────────────────────
     // Funções de apagar
     window.deleteBooking = async (id) => {
       if (confirm('Tem certeza que deseja apagar esta marcação?')) {

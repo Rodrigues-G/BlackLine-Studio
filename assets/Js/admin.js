@@ -8,7 +8,6 @@ import {
   signOut
 } from './firebase.js';
 
-// ────────────────────────────────────────────────
 // 1. Login administrativo
 const loginForm = document.getElementById('login-form');
 const errorMsg = document.getElementById('error-msg');
@@ -55,8 +54,6 @@ if (loginForm) {
     }
   });
 }
-
-// ────────────────────────────────────────────────
 // 2. Proteção de páginas administrativas (ex: dashboard.html)
 onAuthStateChanged(auth, (user) => {
   const isAdminPage = window.location.pathname.includes('dashboard.html') ||
@@ -67,13 +64,11 @@ onAuthStateChanged(auth, (user) => {
     window.location.href = '../login.html'; // ajusta o caminho relativo se necessário
   }
 
-  // Opcional: mostrar email do admin logado (se houver elemento com id="admin-email")
   if (user && document.getElementById('admin-email')) {
     document.getElementById('admin-email').textContent = user.email;
   }
 });
 
-// ────────────────────────────────────────────────
 // 3. Logout (chamado por botão com id="logout-btn")
 document.addEventListener('click', async (e) => {
   if (e.target && e.target.id === 'logout-btn') {

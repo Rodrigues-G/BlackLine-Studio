@@ -16,7 +16,7 @@
         <p class="text-gray-400 mt-2 text-lg">Área do Cliente</p>
       </div>
 
-      <!-- Tabs: Login / Registo -->
+      <!-- Tabs para alternar entre Login e Registo -->
       <div class="flex justify-center mb-8">
         <button id="tab-login" class="px-6 py-2 font-medium border-b-2 border-red-600 text-red-500 transition">Login</button>
         <button id="tab-register" class="px-6 py-2 font-medium text-gray-400 hover:text-gray-200 transition">Criar Conta</button>
@@ -59,7 +59,7 @@
       <!-- Mensagem de feedback -->
       <div id="client-message" class="mt-4 text-center text-sm font-medium hidden"></div>
 
-      <!-- Link de voltar -->
+      <!-- Link de volta ao site -->
       <div class="mt-8 text-center text-sm">
         <a href="index.html" class="text-gray-400 hover:text-red-500 transition">Voltar ao site</a>
       </div>
@@ -75,7 +75,7 @@
       doc,
       setDoc,
       serverTimestamp
-    } from './assets/js/firebase.js';  // ajusta o caminho se necessário
+    } from './assets/js/firebase.js';  
 
     const loginForm = document.getElementById('client-login-form');
     const registerForm = document.getElementById('client-register-form');
@@ -83,7 +83,7 @@
     const tabLogin = document.getElementById('tab-login');
     const tabRegister = document.getElementById('tab-register');
 
-    // Tabs de alternância
+    // Tabs para alternar entre Login e Registo
     tabLogin.addEventListener('click', () => {
       loginForm.classList.remove('hidden');
       registerForm.classList.add('hidden');
@@ -107,7 +107,6 @@
       msg.textContent = text;
     }
 
-    // ────────────────────────────────────────────────
     // Login Cliente → redireciona para index.html
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -137,7 +136,6 @@
       }
     });
 
-    // ────────────────────────────────────────────────
     // Registo → cria conta + documento no Firestore + redireciona
     registerForm.addEventListener('submit', async (e) => {
       e.preventDefault();

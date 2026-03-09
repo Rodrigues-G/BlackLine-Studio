@@ -10,11 +10,9 @@ import {
   onAuthStateChanged
 } from './firebase.js';
 
-// ────────────────────────────────────────────────
 // Variável global para o utilizador atual
 let currentUser = null;
 
-// ────────────────────────────────────────────────
 // Verifica autenticação e controla visibilidade do form + notificação
 onAuthStateChanged(auth, (user) => {
   currentUser = user;
@@ -33,7 +31,6 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
-// ────────────────────────────────────────────────
 // Handler do formulário de agendamento
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('booking-form');
@@ -61,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Captura dos campos (ajusta os IDs conforme o teu HTML real)
+    // Captura dos campos do formulário (ajusta os ids conforme necessário)
     const nome      = document.getElementById('nome')?.value.trim()     || '';
     const email     = document.getElementById('email')?.value.trim()    || '';
     const mensagem  = document.getElementById('mensagem')?.value.trim() || '';
@@ -88,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
         hora,
         userId: currentUser.uid,          // associa ao cliente logado
         createdAt: serverTimestamp(),
-        status: 'pendente'                // opcional – ajuda no dashboard admin
+        status: 'pendente'          // status inicial, pode ser atualizado pelo admin depois
       });
 
       alert('Marcação enviada com sucesso! Entraremos em contacto em breve.');
