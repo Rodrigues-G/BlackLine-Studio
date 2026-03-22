@@ -108,33 +108,32 @@
     }
 
     // Login Cliente → redireciona para index.html
-    loginForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      showMessage('A autenticar...', 'text-gray-400');
+    loginForm.addEventListener('submit', async (e) => { 
+     e.preventDefault();
 
-      const email = document.getElementById('login-email')?.value.trim();
-      const password = document.getElementById('login-password')?.value;
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
 
-      if (!email || !password) {
-        showMessage('Preencha email e password.', 'text-red-500');
-        return;
-      }
-
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-        showMessage('Bem-vindo de volta! Redirecionando...', 'text-green-500');
-        setTimeout(() => window.location.href = 'index.html', 1500);
-      } catch (err) {
-        console.error('Erro no login:', err.code, err.message);
-        let errorMsg = 'Erro ao entrar.';
-        if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password') {
-          errorMsg = 'Email ou password incorretos.';
-        } else if (err.code === 'auth/user-not-found') {
-          errorMsg = 'Utilizador não encontrado.';
-        }
-        showMessage(errorMsg, 'text-red-500');
-      }
+  try {
+    const response = await fetch('backend/login.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
     });
+
+    const result = await response.json();
+
+    if (result.success) {
+      showMessage('Bem-vindo! Redirecionando...', 'text-green-500');
+      localStorage.setItem('uid', result.uid); // guarda UID localmente
+      setTimeout(() => window.location.href = 'index.html', 1500);
+    } else {
+      showMessage(result.error, 'text-red-500');
+    }
+  } catch (err) {
+    showMessage('Erro ao conectar ao servidor', 'text-red-500');
+  }
+  });
 
     // Registo → cria conta + documento no Firestore + redireciona
     registerForm.addEventListener('submit', async (e) => {
