@@ -58,20 +58,17 @@
 <!-- Navbar fixo (sem link Galeria) -->
 <nav class="bg-black border-b border-neutral-800 text-white fixed w-full top-0 z-50">
   <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-    <!-- Logo + Nome no canto esquerdo -->
     <a href="index.html" class="flex items-center space-x-3">
       <img src="assets/imagens/logo.png" alt="Logo BlackLine Studio" class="h-10 w-10 object-contain">
       <h1 class="text-2xl md:text-3xl font-extrabold tracking-wide text-white">BlackLine Studio</h1>
     </a>
 
-    <!-- Links do menu (sem Galeria) -->
     <ul class="flex space-x-6 md:space-x-8 text-base md:text-lg items-center">
       <li><a href="index.html" class="hover:text-red-500 transition">Início</a></li>
       <li><a href="artists.html" class="hover:text-red-500 transition">Artistas</a></li>
       <li><a href="booking.html" class="hover:text-red-500 transition">Agendamentos</a></li>
       <li><a href="contact.html" class="hover:text-red-500 transition">Contactos</a></li>
 
-      <!-- Links dinâmicos -->
       <li id="guest-links">
         <a href="client-login.html" class="hover:text-red-500 transition">Área Cliente</a>
       </li>
@@ -87,7 +84,6 @@
   </div>
 </nav>
 
-<!-- Espaço para navbar fixo -->
 <div class="h-20"></div>
 
 <main class="max-w-6xl mx-auto px-6 py-16">
@@ -98,7 +94,7 @@
   </div>
 </main>
 
-<!-- Modal / Lightbox -->
+<!-- Modal / Lightbox (sem foto de perfil do artista) -->
 <div id="artist-modal" class="modal">
   <div class="modal-content">
     <button onclick="closeModal()" class="absolute top-6 right-6 text-4xl text-gray-400 hover:text-white">✕</button>
@@ -107,34 +103,36 @@
     <p id="modal-artist-desc" class="text-gray-400 mb-8 text-lg"></p>
     
     <div id="modal-gallery" class="modal-gallery">
-      <!-- Imagens inseridas via JS -->
+      <!-- Apenas as tatuagens (não inclui a foto de perfil) -->
     </div>
   </div>
 </div>
 
 <script>
-// Dados dos artistas (adiciona mais facilmente aqui)
+// Dados dos artistas
+// profileImage → só aparece no card da lista (foto de perfil)
+// tattooImages → aparece apenas no modal (galeria de tatuagens)
 const artists = [
   {
     id: 1,
     name: "Alex Ink",
     desc: "Especialista em realismo e blackwork. Mais de 10 anos de experiência em detalhes extremos e sombreamento profundo.",
-    images: [
-      "assets/imagens/artists/alex1.jpg",
-      "assets/imagens/artists/alex2.jpg",
-      "assets/imagens/artists/alex3.jpg",
-      "assets/imagens/artists/alex4.jpg"
+    profileImage: "assets/imagens/WhatsApp Image 2026-03-23 at 1.32.19 PM.jpeg",
+    tattooImages: [
+      "assets/imagens/WhatsApp Image 2026-03-23 at 3.06.52 PM.jpeg",
+      "assets/imagens/WhatsApp Image 2026-03-23 at 3.06.53 PM (1).jpeg",
+      "assets/imagens/WhatsApp Image 2026-03-23 at 3.06.53 PM.jpeg"
     ]
   },
   {
     id: 2,
     name: "Maya Line",
     desc: "Mestre em fine line e tatuagens minimalistas. Linhas precisas, delicadas e elegantes para designs subtis.",
-    images: [
-      "assets/imagens/artists/maya1.jpg",
-      "assets/imagens/artists/maya2.jpg",
-      "assets/imagens/artists/maya3.jpg",
-      "assets/imagens/artists/maya4.jpg"
+    profileImage: "assets/imagens/gaja1.jpg",
+    tattooImages: [
+      "assets/imagens/tatu1.jpg",
+      "assets/imagens/tatu2.jpg",
+      "assets/imagens/tatu3.jpg"
     ]
   }
   // Adiciona mais artistas aqui...
@@ -148,7 +146,7 @@ function renderArtists() {
     const card = document.createElement('div');
     card.className = 'artist-card bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden cursor-pointer';
     card.innerHTML = `
-      <img src="${artist.images[0]}" class="w-full h-80 object-cover">
+      <img src="${artist.profileImage}" class="w-full h-80 object-cover">
       <div class="p-6">
         <h3 class="text-2xl font-bold text-red-500">${artist.name}</h3>
         <p class="text-gray-400 mt-3 line-clamp-3">${artist.desc}</p>
@@ -166,7 +164,8 @@ function openArtistModal(artist) {
   const gallery = document.getElementById('modal-gallery');
   gallery.innerHTML = '';
   
-  artist.images.forEach(src => {
+  // Só adiciona as TATUAGENS (não inclui a foto de perfil)
+  artist.tattooImages.forEach(src => {
     const img = document.createElement('img');
     img.src = src;
     gallery.appendChild(img);

@@ -6,7 +6,6 @@
   <title>Contactos | BlackLine Studio</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* Animação da notificação (se aparecer) */
     @keyframes fadeIn {
       from { opacity: 0; transform: translate(-50%, -20px); }
       to   { opacity: 1; transform: translate(-50%, 0); }
@@ -19,124 +18,92 @@
 
 <body class="bg-gradient-to-br from-neutral-900 via-neutral-800 to-black text-gray-200 min-h-screen flex flex-col">
 
-<!-- Notificação flutuante de perfil incompleto (aparece só na primeira vez) -->
+<!-- Notificação flutuante de perfil incompleto -->
 <div id="profile-notification" class="hidden fixed top-4 left-1/2 -translate-x-1/2 bg-neutral-800 border border-red-600 text-gray-200 px-6 py-4 rounded-lg shadow-2xl z-50 flex items-center space-x-4 animate-fade-in">
-  <span>Atualize o seu perfil para uma melhor experiência!</span>
+  <span>Atualize o teu perfil para uma melhor experiência!</span>
   <a href="perfil.html" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm font-medium transition">
     Ir ao Perfil
   </a>
   <button id="close-profile-notification" class="text-gray-400 hover:text-white">✕</button>
 </div>
 
-<!-- Navbar fixo com logo no canto esquerdo -->
+<!-- Navbar fixo -->
 <nav class="bg-black border-b border-neutral-800 text-white fixed w-full top-0 z-50">
   <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-    <!-- Logo + Nome no canto superior esquerdo -->
     <a href="index.html" class="flex items-center space-x-3">
       <img src="assets/imagens/logo.png" alt="Logo BlackLine Studio" class="h-10 w-10 object-contain">
       <h1 class="text-2xl md:text-3xl font-extrabold tracking-wide text-white">BlackLine Studio</h1>
     </a>
 
-    <!-- Links do menu -->
     <ul class="flex space-x-6 md:space-x-8 text-base md:text-lg items-center">
-  <li><a href="index.html" class="hover:text-red-500 transition">Início</a></li>
-  <li><a href="artists.html" class="hover:text-red-500 transition">Artistas</a></li>
-  <li><a href="booking.html" class="hover:text-red-500 transition">Agendamentos</a></li>
-  <li><a href="contact.html" class="hover:text-red-500 transition">Contactos</a></li>
+      <li><a href="index.html" class="hover:text-red-500 transition">Início</a></li>
+      <li><a href="artists.html" class="hover:text-red-500 transition">Artistas</a></li>
+      <li><a href="booking.html" class="hover:text-red-500 transition">Agendamentos</a></li>
+      <li><a href="contact.html" class="hover:text-red-500 transition">Contactos</a></li>
 
-  <!-- Links dinâmicos -->
-  <li id="guest-links">
-    <a href="client-login.html" class="hover:text-red-500 transition">Área Cliente</a>
-  </li>
-  <li id="user-links" class="hidden flex items-center space-x-6">
-    <a href="perfil.html" class="hover:text-red-500 transition">Perfil</a>
-    <button id="logout-btn" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm font-medium transition">
-      Sair
-    </button>
-  </li>
+      <li id="guest-links">
+        <a href="client-login.html" class="hover:text-red-500 transition">Área Cliente</a>
+      </li>
+      <li id="user-links" class="hidden flex items-center space-x-6">
+        <a href="perfil.html" class="hover:text-red-500 transition">Perfil</a>
+        <button id="logout-btn" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm font-medium transition">
+          Sair
+        </button>
+      </li>
 
-  <li><a href="login.html" class="hover:text-red-500 transition">Admin</a></li>
-</ul>
+      <li><a href="login.html" class="hover:text-red-500 transition">Admin</a></li>
+    </ul>
   </div>
 </nav>
 
-<!-- Espaço para navbar fixo -->
 <div class="h-20"></div>
 
-<main class="flex-grow container mx-auto px-6 py-16">
-  <h2 class="text-4xl font-extrabold text-center mb-4 text-white">
+<main class="flex-grow container mx-auto px-6 py-16 max-w-3xl text-center"> <!-- tudo centrado -->
+
+  <h2 class="text-4xl font-extrabold mb-4 text-white">
     Contacta o Estúdio
   </h2>
-  <p class="text-center text-gray-400 mb-16 max-w-2xl mx-auto">
-    Tens alguma ideia, dúvida ou queres marcar uma sessão?  
-    Fala connosco ou visita o nosso estúdio.
+  <p class="text-gray-400 mb-16">
+    Visita-nos ou entra em contacto connosco para qualquer dúvida ou marcação.
   </p>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-6xl mx-auto">
+  <!-- Informações do estúdio (agora centradas, maiores e limpas) -->
+  <div class="bg-neutral-900 border border-neutral-800 p-10 rounded-2xl shadow-2xl mx-auto max-w-2xl">
+    <h3 class="text-3xl font-bold text-red-500 mb-8">📍 Estúdio</h3>
 
-    <!-- Informações do Estúdio -->
-    <div class="bg-neutral-900 border border-neutral-800 p-8 rounded-2xl shadow-xl">
-      <h3 class="text-2xl font-bold text-red-500 mb-6">📍 Estúdio</h3>
+    <div class="space-y-6 text-gray-300 text-lg">
+      <p><strong>Morada:</strong><br>
+        Rua Da Capela, nº 77<br>
+        2485-096 Mira De Aire
+      </p>
 
-      <div class="space-y-4 text-gray-300">
-        <p><strong>Morada:</strong><br>
-          Rua Ink Street, nº 13<br>
-          1000-000 Lisboa
-        </p>
+      <p><strong>Telefone:</strong><br>
+        +351 945 235 678
+      </p>
 
-        <p><strong>Telefone:</strong><br>
-          +351 911 222 333
-        </p>
+      <p><strong>Email:</strong><br>
+        BlackLineStudio.pt@gmail.com
+      </p>
 
-        <p><strong>Email:</strong><br>
-          contacto@blacklinestudio.pt
-        </p>
-
-        <p><strong>Horário:</strong><br>
-          Segunda a Sexta: 11h – 20h<br>
-          Sábado: 12h – 18h<br>
-          Domingo: Encerrado
-        </p>
-      </div>
-
-      <div class="mt-8">
-        <h4 class="font-semibold text-red-500 mb-2">Redes Sociais</h4>
-        <div class="flex space-x-6">
-          <a href="#" class="hover:text-red-400 transition">Instagram</a>
-          <a href="#" class="hover:text-red-400 transition">Facebook</a>
-        </div>
-      </div>
+      <p><strong>Horário:</strong><br>
+        Segunda a Sexta: 8:20h – 20h<br>
+        Sábado: 9h – 14h<br>
+        Domingo: Encerrado
+      </p>
     </div>
 
-    <!-- Formulário de Contacto -->
-    <form id="contact-form" class="bg-neutral-900 border border-neutral-800 p-8 rounded-2xl shadow-xl space-y-6">
-      <h3 class="text-2xl font-bold text-red-500 mb-6">✍️ Envia a tua ideia</h3>
-
-      <div>
-        <label for="nome" class="block text-sm font-medium text-gray-300 mb-2">Nome</label>
-        <input id="nome" type="text" required class="w-full px-4 py-3 bg-neutral-950 border border-neutral-700 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/30 transition" placeholder="O teu nome" />
+    <div class="mt-10">
+      <h4 class="font-semibold text-red-500 mb-4 text-xl">Redes Sociais</h4>
+      <div class="flex space-x-8 justify-center">
+        <a href="#" class="hover:text-red-400 transition text-lg">Instagram</a>
+        <a href="#" class="hover:text-red-400 transition text-lg">Facebook</a>
       </div>
-
-      <div>
-        <label for="email" class="block text-sm font-medium text-gray-300 mb-2">Email</label>
-        <input id="email" type="email" required class="w-full px-4 py-3 bg-neutral-950 border border-neutral-700 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/30 transition" placeholder="teu@email.com" />
-      </div>
-
-      <div>
-        <label for="mensagem" class="block text-sm font-medium text-gray-300 mb-2">Mensagem</label>
-        <textarea id="mensagem" rows="5" required class="w-full px-4 py-3 bg-neutral-950 border border-neutral-700 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/30 transition" placeholder="Escreve aqui a tua mensagem..."></textarea>
-      </div>
-
-      <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-bold tracking-wide transition duration-300">
-        Enviar Mensagem
-      </button>
-
-      <div id="contact-message" class="mt-4 text-center text-sm font-medium hidden"></div>
-    </form>
+    </div>
   </div>
+
 </main>
 
-<footer class="bg-black border-t border-neutral-800 text-gray-400 text-center py-4 mt-auto">
+<footer class="bg-black border-t border-neutral-800 text-gray-400 text-center py-6 mt-auto">
   <p>© <span id="ano"></span> BlackLine Studio — Todos os direitos reservados</p>
 </footer>
 
@@ -144,8 +111,6 @@
 <script>
   document.getElementById("ano").textContent = new Date().getFullYear();
 </script>
-
-<script type="module" src="assets/js/contact.js"></script>
 
 <script type="module">
   import { auth, onAuthStateChanged, signOut, db, doc, getDoc } from './assets/js/firebase.js';
@@ -166,7 +131,6 @@
         };
       }
 
-      // Notificação única se perfil incompleto
       try {
         const userDoc = await getDoc(doc(db, 'users', user.uid));
         if (!userDoc.exists() || !userDoc.data().profileCompleted) {
